@@ -1,0 +1,17 @@
+C:\Users\angioletti.18174\Desktop\Angioletti_Logistica\Angioletti_Logistica\bin\Debug\net6.0-windows\Angioletti_Logistica.exe
+C:\Users\angioletti.18174\Desktop\Angioletti_Logistica\Angioletti_Logistica\bin\Debug\net6.0-windows\Angioletti_Logistica.deps.json
+C:\Users\angioletti.18174\Desktop\Angioletti_Logistica\Angioletti_Logistica\bin\Debug\net6.0-windows\Angioletti_Logistica.runtimeconfig.json
+C:\Users\angioletti.18174\Desktop\Angioletti_Logistica\Angioletti_Logistica\bin\Debug\net6.0-windows\Angioletti_Logistica.dll
+C:\Users\angioletti.18174\Desktop\Angioletti_Logistica\Angioletti_Logistica\bin\Debug\net6.0-windows\Angioletti_Logistica.pdb
+C:\Users\angioletti.18174\Desktop\Angioletti_Logistica\Angioletti_Logistica\obj\Debug\net6.0-windows\Angioletti_Logistica.csproj.AssemblyReference.cache
+C:\Users\angioletti.18174\Desktop\Angioletti_Logistica\Angioletti_Logistica\obj\Debug\net6.0-windows\Angioletti_Logistica.csproj.GenerateResource.cache
+C:\Users\angioletti.18174\Desktop\Angioletti_Logistica\Angioletti_Logistica\obj\Debug\net6.0-windows\Angioletti_Logistica.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\angioletti.18174\Desktop\Angioletti_Logistica\Angioletti_Logistica\obj\Debug\net6.0-windows\Angioletti_Logistica.AssemblyInfoInputs.cache
+C:\Users\angioletti.18174\Desktop\Angioletti_Logistica\Angioletti_Logistica\obj\Debug\net6.0-windows\Angioletti_Logistica.AssemblyInfo.cs
+C:\Users\angioletti.18174\Desktop\Angioletti_Logistica\Angioletti_Logistica\obj\Debug\net6.0-windows\Angioletti_Logistica.csproj.CoreCompileInputs.cache
+C:\Users\angioletti.18174\Desktop\Angioletti_Logistica\Angioletti_Logistica\obj\Debug\net6.0-windows\Angioletti_Logistica.dll
+C:\Users\angioletti.18174\Desktop\Angioletti_Logistica\Angioletti_Logistica\obj\Debug\net6.0-windows\refint\Angioletti_Logistica.dll
+C:\Users\angioletti.18174\Desktop\Angioletti_Logistica\Angioletti_Logistica\obj\Debug\net6.0-windows\Angioletti_Logistica.pdb
+C:\Users\angioletti.18174\Desktop\Angioletti_Logistica\Angioletti_Logistica\obj\Debug\net6.0-windows\Angioletti_Logistica.genruntimeconfig.cache
+C:\Users\angioletti.18174\Desktop\Angioletti_Logistica\Angioletti_Logistica\obj\Debug\net6.0-windows\ref\Angioletti_Logistica.dll
+C:\Users\angioletti.18174\Desktop\Angioletti_Logistica\Angioletti_Logistica\obj\Debug\net6.0-windows\Angioletti_Logistica.frm_main.resources
