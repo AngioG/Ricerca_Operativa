@@ -30,6 +30,9 @@
         {
             this.lbl_title = new System.Windows.Forms.Label();
             this.pan_controls = new System.Windows.Forms.Panel();
+            this.btn_execute = new System.Windows.Forms.Button();
+            this.label6 = new System.Windows.Forms.Label();
+            this.cmb_execute = new System.Windows.Forms.ComboBox();
             this.chk_random = new System.Windows.Forms.CheckBox();
             this.nud_tot = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
@@ -44,6 +47,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.dgv_main = new System.Windows.Forms.DataGridView();
+            this.list_execution = new System.Windows.Forms.ListBox();
             this.pan_controls.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nud_tot)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_max)).BeginInit();
@@ -60,13 +64,16 @@
             this.lbl_title.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
             this.lbl_title.Location = new System.Drawing.Point(0, 0);
             this.lbl_title.Name = "lbl_title";
-            this.lbl_title.Size = new System.Drawing.Size(1400, 50);
+            this.lbl_title.Size = new System.Drawing.Size(1750, 50);
             this.lbl_title.TabIndex = 0;
             this.lbl_title.Text = "LOGISTICA";
             this.lbl_title.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // pan_controls
             // 
+            this.pan_controls.Controls.Add(this.btn_execute);
+            this.pan_controls.Controls.Add(this.label6);
+            this.pan_controls.Controls.Add(this.cmb_execute);
             this.pan_controls.Controls.Add(this.chk_random);
             this.pan_controls.Controls.Add(this.nud_tot);
             this.pan_controls.Controls.Add(this.label5);
@@ -83,14 +90,49 @@
             this.pan_controls.Dock = System.Windows.Forms.DockStyle.Top;
             this.pan_controls.Location = new System.Drawing.Point(0, 50);
             this.pan_controls.Name = "pan_controls";
-            this.pan_controls.Size = new System.Drawing.Size(1400, 105);
+            this.pan_controls.Size = new System.Drawing.Size(1750, 105);
             this.pan_controls.TabIndex = 1;
+            // 
+            // btn_execute
+            // 
+            this.btn_execute.Enabled = false;
+            this.btn_execute.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.btn_execute.Location = new System.Drawing.Point(1305, 15);
+            this.btn_execute.Name = "btn_execute";
+            this.btn_execute.Size = new System.Drawing.Size(75, 75);
+            this.btn_execute.TabIndex = 16;
+            this.btn_execute.TabStop = false;
+            this.btn_execute.Text = "Esegui";
+            this.btn_execute.UseVisualStyleBackColor = true;
+            this.btn_execute.Click += new System.EventHandler(this.btn_execute_Click);
+            // 
+            // label6
+            // 
+            this.label6.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label6.Location = new System.Drawing.Point(1040, 20);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(250, 25);
+            this.label6.TabIndex = 15;
+            this.label6.Text = "Algoritmo da usare per risolvere:";
+            // 
+            // cmb_execute
+            // 
+            this.cmb_execute.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmb_execute.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.cmb_execute.FormattingEnabled = true;
+            this.cmb_execute.Items.AddRange(new object[] {
+            "Tutti",
+            "Nord-Ovest"});
+            this.cmb_execute.Location = new System.Drawing.Point(1040, 50);
+            this.cmb_execute.Name = "cmb_execute";
+            this.cmb_execute.Size = new System.Drawing.Size(250, 25);
+            this.cmb_execute.TabIndex = 14;
             // 
             // chk_random
             // 
             this.chk_random.AutoSize = true;
             this.chk_random.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.chk_random.Location = new System.Drawing.Point(265, 48);
+            this.chk_random.Location = new System.Drawing.Point(265, 50);
             this.chk_random.Name = "chk_random";
             this.chk_random.Size = new System.Drawing.Size(83, 25);
             this.chk_random.TabIndex = 13;
@@ -140,7 +182,7 @@
             // nud_max
             // 
             this.nud_max.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.nud_max.Location = new System.Drawing.Point(860, 64);
+            this.nud_max.Location = new System.Drawing.Point(850, 64);
             this.nud_max.Maximum = new decimal(new int[] {
             50,
             0,
@@ -164,7 +206,7 @@
             // label4
             // 
             this.label4.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label4.Location = new System.Drawing.Point(675, 64);
+            this.label4.Location = new System.Drawing.Point(665, 64);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(190, 25);
             this.label4.TabIndex = 9;
@@ -173,7 +215,7 @@
             // nud_min
             // 
             this.nud_min.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.nud_min.Location = new System.Drawing.Point(860, 20);
+            this.nud_min.Location = new System.Drawing.Point(850, 20);
             this.nud_min.Maximum = new decimal(new int[] {
             30,
             0,
@@ -197,7 +239,7 @@
             // label3
             // 
             this.label3.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label3.Location = new System.Drawing.Point(675, 20);
+            this.label3.Location = new System.Drawing.Point(665, 20);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(190, 25);
             this.label3.TabIndex = 7;
@@ -206,7 +248,7 @@
             // btn_gen
             // 
             this.btn_gen.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btn_gen.Location = new System.Drawing.Point(936, 15);
+            this.btn_gen.Location = new System.Drawing.Point(925, 15);
             this.btn_gen.Name = "btn_gen";
             this.btn_gen.Size = new System.Drawing.Size(75, 75);
             this.btn_gen.TabIndex = 6;
@@ -218,7 +260,7 @@
             // btn_chnge_table
             // 
             this.btn_chnge_table.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btn_chnge_table.Location = new System.Drawing.Point(548, 14);
+            this.btn_chnge_table.Location = new System.Drawing.Point(550, 14);
             this.btn_chnge_table.Name = "btn_chnge_table";
             this.btn_chnge_table.Size = new System.Drawing.Size(75, 75);
             this.btn_chnge_table.TabIndex = 5;
@@ -306,12 +348,26 @@
             this.dgv_main.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dgv_main.Size = new System.Drawing.Size(1350, 600);
             this.dgv_main.TabIndex = 2;
+            this.dgv_main.CellLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_main_CellLeave);
+            this.dgv_main.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dgv_main_EditingControlShowing);
+            // 
+            // list_execution
+            // 
+            this.list_execution.FormattingEnabled = true;
+            this.list_execution.ItemHeight = 15;
+            this.list_execution.Location = new System.Drawing.Point(1425, 175);
+            this.list_execution.Name = "list_execution";
+            this.list_execution.Size = new System.Drawing.Size(300, 589);
+            this.list_execution.TabIndex = 3;
+            this.list_execution.Visible = false;
             // 
             // frm_main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1400, 800);
+            this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.ClientSize = new System.Drawing.Size(1750, 800);
+            this.Controls.Add(this.list_execution);
             this.Controls.Add(this.dgv_main);
             this.Controls.Add(this.pan_controls);
             this.Controls.Add(this.lbl_title);
@@ -348,5 +404,9 @@
         private CheckBox chk_random;
         private NumericUpDown nud_tot;
         private Label label5;
+        private Button btn_execute;
+        private Label label6;
+        private ComboBox cmb_execute;
+        private ListBox list_execution;
     }
 }

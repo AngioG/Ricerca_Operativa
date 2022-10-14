@@ -12,7 +12,8 @@ namespace Angioletti_Logistica
 
         private void frm_main_Load(object sender, EventArgs e)
         {
-
+            this.ClientSize = new System.Drawing.Size(1400, 800);
+            cmb_execute.SelectedIndex = 0;
         }
 
         private void btn_chnge_table_Click(object sender, EventArgs e)
@@ -28,7 +29,7 @@ namespace Angioletti_Logistica
             {
                 DataGridViewColumn column = new DataGridViewColumn();
                 column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-                column.HeaderText = $"P{i+1}";
+                column.HeaderText = $"P{i + 1}";
                 column.CellTemplate = dataGridViewCell;
                 dgv_main.Columns.Add(column);
             }
@@ -45,7 +46,7 @@ namespace Angioletti_Logistica
 
             for (int i = 0; i < nud_prod.Value; i++)
             {
-                DataGridViewRow row = (DataGridViewRow) dgv_main.RowTemplate.Clone();
+                DataGridViewRow row = (DataGridViewRow)dgv_main.RowTemplate.Clone();
                 row.CreateCells(dgv_main);
 
                 row.HeaderCell.Value = $"Up{i + 1}";
@@ -53,6 +54,7 @@ namespace Angioletti_Logistica
                 for (int x = 0; x < nud_cons.Value; x++)
                 {
                     row.Cells[x].Value = 1;
+
                 }
 
                 dgv_main.Rows.Add(row);
@@ -91,25 +93,26 @@ namespace Angioletti_Logistica
                 DatiCasuali((int)nud_tot.Value / 10);
             }
             #endregion
+            btn_execute.Enabled = true;
         }
 
         public void DatiCasuali(int Tot)
         {
-            dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = Tot*10;
+            dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = Tot * 10;
             Random rng = new Random();
 
             #region consumatori
-            int[] dati_u = new int[dgv_main.Columns.Count-1];
+            int[] dati_u = new int[dgv_main.Columns.Count - 1];
             int Tot_u = Tot + dgv_main.Columns.Count - 2;
 
-            
+
             for (int i = 0; i < dati_u.Count(); i++)
             {
                 int a = 0;
                 do
                 {
                     a = rng.Next(1, Tot_u);
-                } while (dati_u.Contains(a) || dati_u.Contains(a+1) || dati_u.Contains(a-1));
+                } while (dati_u.Contains(a) || dati_u.Contains(a + 1) || dati_u.Contains(a - 1));
 
                 dati_u[i] = a;
             }
@@ -118,8 +121,8 @@ namespace Angioletti_Logistica
             dati_u = dati_u.OrderBy(n => n).ToArray();
 
             for (int i = 0; i < dgv_main.Columns.Count - 2; i++)
-                dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[i].Value = (dati_u[i] - 1 - (i == 0 ? 0 : dati_u[i-1]))*10;
-            dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 2].Value = (Tot_u - dati_u[dati_u.Count() - 2])*10;
+                dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[i].Value = (dati_u[i] - 1 - (i == 0 ? 0 : dati_u[i - 1])) * 10;
+            dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 2].Value = (Tot_u - dati_u[dati_u.Count() - 2]) * 10;
             #endregion
             #region produttori
             int[] dati_p = new int[dgv_main.Rows.Count - 1];
@@ -132,7 +135,7 @@ namespace Angioletti_Logistica
                 do
                 {
                     a = rng.Next(1, Tot_p);
-                } while (dati_p.Contains(a) || dati_p.Contains(a+1) || dati_p.Contains(a-1));
+                } while (dati_p.Contains(a) || dati_p.Contains(a + 1) || dati_p.Contains(a - 1));
 
                 dati_p[i] = a;
             }
@@ -141,8 +144,8 @@ namespace Angioletti_Logistica
             dati_p = dati_p.OrderBy(n => n).ToArray();
 
             for (int i = 0; i < dgv_main.Rows.Count - 2; i++)
-                dgv_main.Rows[i].Cells[dgv_main.Columns.Count - 1].Value = (dati_p[i] - 1 - (i == 0 ? 0 : dati_p[i - 1]))*10;
-            dgv_main.Rows[dgv_main.Rows.Count - 2].Cells[dgv_main.Columns.Count - 1].Value = (Tot_p - dati_p[dati_p.Count() - 2])*10;
+                dgv_main.Rows[i].Cells[dgv_main.Columns.Count - 1].Value = (dati_p[i] - 1 - (i == 0 ? 0 : dati_p[i - 1])) * 10;
+            dgv_main.Rows[dgv_main.Rows.Count - 2].Cells[dgv_main.Columns.Count - 1].Value = (Tot_p - dati_p[dati_p.Count() - 2]) * 10;
             #endregion
         }
 
@@ -153,9 +156,9 @@ namespace Angioletti_Logistica
 
             NumericUpDown nud = sender as NumericUpDown;
 
-            if(nud.Name == "nud_min")
+            if (nud.Name == "nud_min")
             {
-                if(nud.Value >= nud_max.Value)
+                if (nud.Value >= nud_max.Value)
                     nud_max.Value = nud.Value + 1;
             }
 
@@ -168,7 +171,7 @@ namespace Angioletti_Logistica
 
         private void btn_gen_Click(object sender, EventArgs e)
         {
-            if(dgv_main.Columns.Count == 0)
+            if (dgv_main.Columns.Count == 0)
             {
                 MessageBox.Show("Devi prima creare una tabella", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -176,8 +179,8 @@ namespace Angioletti_Logistica
 
             Random rng = new Random();
 
-            for (int r = 0; r < dgv_main.Rows.Count-1; r++)
-                for (int c = 0; c < dgv_main.Columns.Count-1; c++)        
+            for (int r = 0; r < dgv_main.Rows.Count - 1; r++)
+                for (int c = 0; c < dgv_main.Columns.Count - 1; c++)
                 {
                     int n = rng.Next((int)nud_min.Value, (int)nud_max.Value);
                     dgv_main.Rows[r].Cells[c].Value = n;
@@ -227,5 +230,91 @@ namespace Angioletti_Logistica
 
             nud_tot.Value = val;
         }
+
+        #region esecuzione
+        private void btn_execute_Click(object sender, EventArgs e)
+        {
+            this.ClientSize = new System.Drawing.Size(1750, 800);
+            list_execution.Visible = true;
+            list_execution.Items.Clear();
+            this.CenterToScreen();
+            Lock_interface(true);
+
+            #region esecuzione
+            switch(cmb_execute.SelectedIndex)
+            {
+                case 0:
+                    {
+                        NordOvest();
+                        break;
+                    }
+                    case 1:
+                    {
+                        NordOvest();
+                            break;
+                    }
+            }
+            #endregion
+
+            this.ClientSize = new System.Drawing.Size(1400, 800);
+            Lock_interface(false);
+        }
+
+        public void Lock_interface(bool enable)
+        {
+            foreach (Control a in Controls)
+            {
+                a.Enabled = !enable;
+            }
+        }
+
+        #region algoritmi
+        public int NordOvest()
+        {
+            int tot = (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value;
+            int res = 0;
+
+            do
+            {
+                string produttore = dgv_main.Rows[0].HeaderCell.Value.ToString();
+                string fornitore = dgv_main.Columns[0].HeaderCell.Value.ToString();
+                int prezzo = (int)dgv_main.Rows[0].Cells[0].Value;
+                int val_p = (int)dgv_main.Rows[0].Cells[dgv_main.Columns.Count - 1].Value;
+                int val_f = (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[0].Value;
+
+
+
+                System.Threading.Thread.Sleep(1000);
+                tot = (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value;
+            } while (tot != 0);
+            
+
+            return res;
+        }
+        #endregion
+        #endregion
+
+        #region editing celle
+        private void dgv_main_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            dgv_main.EditingControl.KeyPress += new KeyPressEventHandler(EditingControl_KeyDown);
+        }
+
+        void EditingControl_KeyDown(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+                e.Handled = true;
+
+        }
+
+        private void dgv_main_CellLeave(object sender, DataGridViewCellEventArgs e)
+        {
+            if (!uint.TryParse(dgv_main.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString(), out uint n))
+            {
+                MessageBox.Show("Devi inserire un intero senza segno", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                dgv_main.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = (new Random()).Next((int)nud_min.Value, (int)nud_max.Value);
+            }
+        }
+        #endregion
     }
 }
