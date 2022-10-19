@@ -28,8 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lbl_title = new System.Windows.Forms.Label();
             this.pan_controls = new System.Windows.Forms.Panel();
+            this.nud_delay = new System.Windows.Forms.NumericUpDown();
+            this.label7 = new System.Windows.Forms.Label();
             this.btn_execute = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.cmb_execute = new System.Windows.Forms.ComboBox();
@@ -48,7 +52,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.dgv_main = new System.Windows.Forms.DataGridView();
             this.list_execution = new System.Windows.Forms.ListBox();
+            this.btn_espandi = new System.Windows.Forms.Button();
             this.pan_controls.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nud_delay)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_tot)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_max)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_min)).BeginInit();
@@ -71,6 +77,8 @@
             // 
             // pan_controls
             // 
+            this.pan_controls.Controls.Add(this.nud_delay);
+            this.pan_controls.Controls.Add(this.label7);
             this.pan_controls.Controls.Add(this.btn_execute);
             this.pan_controls.Controls.Add(this.label6);
             this.pan_controls.Controls.Add(this.cmb_execute);
@@ -92,6 +100,38 @@
             this.pan_controls.Name = "pan_controls";
             this.pan_controls.Size = new System.Drawing.Size(1750, 105);
             this.pan_controls.TabIndex = 1;
+            // 
+            // nud_delay
+            // 
+            this.nud_delay.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.nud_delay.Increment = new decimal(new int[] {
+            500,
+            0,
+            0,
+            0});
+            this.nud_delay.Location = new System.Drawing.Point(1585, 21);
+            this.nud_delay.Maximum = new decimal(new int[] {
+            1500,
+            0,
+            0,
+            0});
+            this.nud_delay.Name = "nud_delay";
+            this.nud_delay.Size = new System.Drawing.Size(50, 25);
+            this.nud_delay.TabIndex = 18;
+            this.nud_delay.Value = new decimal(new int[] {
+            1500,
+            0,
+            0,
+            0});
+            // 
+            // label7
+            // 
+            this.label7.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.label7.Location = new System.Drawing.Point(1400, 19);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(205, 25);
+            this.label7.TabIndex = 17;
+            this.label7.Text = "Tempo per un passaggio:";
             // 
             // btn_execute
             // 
@@ -265,7 +305,7 @@
             this.btn_chnge_table.Size = new System.Drawing.Size(75, 75);
             this.btn_chnge_table.TabIndex = 5;
             this.btn_chnge_table.TabStop = false;
-            this.btn_chnge_table.Text = "Aggiorna Tabella";
+            this.btn_chnge_table.Text = "Nuova Tabella";
             this.btn_chnge_table.UseVisualStyleBackColor = true;
             this.btn_chnge_table.Click += new System.EventHandler(this.btn_chnge_table_Click);
             // 
@@ -340,10 +380,30 @@
             this.dgv_main.AllowUserToAddRows = false;
             this.dgv_main.AllowUserToDeleteRows = false;
             this.dgv_main.AllowUserToResizeColumns = false;
-            this.dgv_main.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgv_main.BackgroundColor = System.Drawing.SystemColors.ActiveCaption;
+            this.dgv_main.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgv_main.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.dgv_main.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dgv_main.EnableHeadersVisualStyles = false;
             this.dgv_main.Location = new System.Drawing.Point(25, 175);
             this.dgv_main.Name = "dgv_main";
-            this.dgv_main.RowHeadersWidth = 50;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgv_main.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            this.dgv_main.RowHeadersWidth = 120;
+            this.dgv_main.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dgv_main.RowTemplate.Height = 25;
             this.dgv_main.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dgv_main.Size = new System.Drawing.Size(1350, 600);
@@ -353,13 +413,26 @@
             // 
             // list_execution
             // 
+            this.list_execution.Font = new System.Drawing.Font("Segoe UI", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.list_execution.FormattingEnabled = true;
-            this.list_execution.ItemHeight = 15;
-            this.list_execution.Location = new System.Drawing.Point(1425, 175);
+            this.list_execution.Location = new System.Drawing.Point(1400, 175);
             this.list_execution.Name = "list_execution";
-            this.list_execution.Size = new System.Drawing.Size(300, 589);
+            this.list_execution.Size = new System.Drawing.Size(325, 563);
             this.list_execution.TabIndex = 3;
             this.list_execution.Visible = false;
+            // 
+            // btn_espandi
+            // 
+            this.btn_espandi.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.btn_espandi.Location = new System.Drawing.Point(1400, 744);
+            this.btn_espandi.Name = "btn_espandi";
+            this.btn_espandi.Size = new System.Drawing.Size(325, 31);
+            this.btn_espandi.TabIndex = 6;
+            this.btn_espandi.TabStop = false;
+            this.btn_espandi.Text = "Espandi";
+            this.btn_espandi.UseVisualStyleBackColor = true;
+            this.btn_espandi.Visible = false;
+            this.btn_espandi.Click += new System.EventHandler(this.btn_espandi_Click);
             // 
             // frm_main
             // 
@@ -367,6 +440,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.ClientSize = new System.Drawing.Size(1750, 800);
+            this.Controls.Add(this.btn_espandi);
             this.Controls.Add(this.list_execution);
             this.Controls.Add(this.dgv_main);
             this.Controls.Add(this.pan_controls);
@@ -376,6 +450,7 @@
             this.Load += new System.EventHandler(this.frm_main_Load);
             this.pan_controls.ResumeLayout(false);
             this.pan_controls.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nud_delay)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_tot)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_max)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_min)).EndInit();
@@ -408,5 +483,8 @@
         private Label label6;
         private ComboBox cmb_execute;
         private ListBox list_execution;
+        private Button btn_espandi;
+        private NumericUpDown nud_delay;
+        private Label label7;
     }
 }

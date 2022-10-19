@@ -49,3 +49,4 @@ C:\Users\angioletti.18174\Downloads\Logica-main\Angioletti_Logistica\obj\Debug\n
 C:\Users\angioletti.18174\Downloads\Logica-main\Angioletti_Logistica\obj\Debug\net6.0-windows\Angioletti_Logistica.pdb
 C:\Users\angioletti.18174\Downloads\Logica-main\Angioletti_Logistica\obj\Debug\net6.0-windows\Angioletti_Logistica.genruntimeconfig.cache
 C:\Users\angioletti.18174\Downloads\Logica-main\Angioletti_Logistica\obj\Debug\net6.0-windows\ref\Angioletti_Logistica.dll
+C:\Users\angioletti\Downloads\Logica-main\Angioletti_Logistica\obj\Debug\net6.0-windows\Angioletti_Logistica.frm_vis.resources
