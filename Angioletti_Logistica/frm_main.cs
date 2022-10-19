@@ -1,10 +1,13 @@
 using System.Data;
+using System.Data.Common;
 using System.Windows.Forms;
 
 namespace Angioletti_Logistica
 {
     public partial class frm_main : Form
     {
+        //Color color { get; set; }
+
         public frm_main()
         {
             InitializeComponent();
@@ -14,8 +17,11 @@ namespace Angioletti_Logistica
         {
             this.ClientSize = new System.Drawing.Size(1400, 800);
             cmb_execute.SelectedIndex = 0;
+            //color = dgv_main.DefaultCellStyle.SelectionBackColor;
+            dgv_main.DefaultCellStyle.SelectionForeColor = Color.White;
         }
 
+        #region  input
         private void btn_chnge_table_Click(object sender, EventArgs e)
         {
             #region setup
@@ -29,6 +35,7 @@ namespace Angioletti_Logistica
             {
                 DataGridViewColumn column = new DataGridViewColumn();
                 column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
                 column.HeaderText = $"P{i + 1}";
                 column.CellTemplate = dataGridViewCell;
                 dgv_main.Columns.Add(column);
@@ -42,8 +49,6 @@ namespace Angioletti_Logistica
             dgv_main.Columns.Add(last_column);
             #endregion
             #region rows
-            dgv_main.RowHeadersWidth = dgv_main.Columns[0].Width;
-
             for (int i = 0; i < nud_prod.Value; i++)
             {
                 DataGridViewRow row = (DataGridViewRow)dgv_main.RowTemplate.Clone();
@@ -54,7 +59,7 @@ namespace Angioletti_Logistica
                 for (int x = 0; x < nud_cons.Value; x++)
                 {
                     row.Cells[x].Value = 1;
-
+                    row.Cells[x].ValueType = typeof(int);
                 }
 
                 dgv_main.Rows.Add(row);
@@ -169,35 +174,6 @@ namespace Angioletti_Logistica
             }
         }
 
-        private void btn_gen_Click(object sender, EventArgs e)
-        {
-            if (dgv_main.Columns.Count == 0)
-            {
-                MessageBox.Show("Devi prima creare una tabella", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            Random rng = new Random();
-
-            for (int r = 0; r < dgv_main.Rows.Count - 1; r++)
-                for (int c = 0; c < dgv_main.Columns.Count - 1; c++)
-                {
-                    int n = rng.Next((int)nud_min.Value, (int)nud_max.Value);
-                    dgv_main.Rows[r].Cells[c].Value = n;
-                }
-
-            if (chk_random.Checked)
-            {
-                int min = (int)(dgv_main.Columns.Count > dgv_main.Rows.Count ? dgv_main.Columns.Count - 1 : dgv_main.Rows.Count - 1);
-                min = (2 * min + 1) * 10;
-                DatiCasuali(new Random().Next(min, 150));
-            }
-            else
-            {
-                DatiCasuali((int)nud_tot.Value / 10);
-            }
-        }
-
         private void chk_random_CheckedChanged(object sender, EventArgs e)
         {
             if (chk_random.Checked)
@@ -231,33 +207,93 @@ namespace Angioletti_Logistica
             nud_tot.Value = val;
         }
 
+        private void btn_gen_Click(object sender, EventArgs e)
+        {
+            if (dgv_main.Columns.Count == 0)
+            {
+                MessageBox.Show("Devi prima creare una tabella", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            Random rng = new Random();
+
+            for (int r = 0; r < dgv_main.Rows.Count - 1; r++)
+                for (int c = 0; c < dgv_main.Columns.Count - 1; c++)
+                {
+                    int n = rng.Next((int)nud_min.Value, (int)nud_max.Value);
+                    dgv_main.Rows[r].Cells[c].Value = n;
+                }
+
+            if (chk_random.Checked)
+            {
+                int min = (int)(dgv_main.Columns.Count > dgv_main.Rows.Count ? dgv_main.Columns.Count - 1 : dgv_main.Rows.Count - 1);
+                min = (2 * min + 1) * 10;
+                DatiCasuali(new Random().Next(min, 150));
+            }
+            else
+            {
+                DatiCasuali((int)nud_tot.Value / 10);
+            }
+        }
+        #endregion
+
         #region esecuzione
         private void btn_execute_Click(object sender, EventArgs e)
         {
+            if (dgv_main.Rows.Count <= 2 || dgv_main.Columns.Count <= 2)
+            {
+                btn_execute.Enabled = false;
+                return;
+            }
+
             this.ClientSize = new System.Drawing.Size(1750, 800);
+            btn_espandi.Visible = true;
             list_execution.Visible = true;
             list_execution.Items.Clear();
             this.CenterToScreen();
+            dgv_main.DefaultCellStyle.SelectionForeColor = Color.Black;
             Lock_interface(true);
 
+            dgv_main.DefaultCellStyle.SelectionBackColor = dgv_main.DefaultCellStyle.BackColor;
+
+            dgv_main.ClearSelection();
+
             #region esecuzione
-            switch(cmb_execute.SelectedIndex)
+            switch (cmb_execute.SelectedIndex)
             {
                 case 0:
                     {
-                        NordOvest();
+                        NordOvest((int)nud_delay.Value);
                         break;
                     }
-                    case 1:
+                case 1:
                     {
-                        NordOvest();
-                            break;
+                        NordOvest((int)nud_delay.Value);
+                        break;
                     }
             }
             #endregion
 
-            this.ClientSize = new System.Drawing.Size(1400, 800);
+            /*this.ClientSize = new System.Drawing.Size(1400, 800);*/
             Lock_interface(false);
+            btn_execute.Enabled = false;
+            dgv_main.DefaultCellStyle.SelectionForeColor = Color.White;
+            //dgv_main.DefaultCellStyle.SelectionBackColor = color;
+            
+        }
+
+        public void ColorCells(int rowIndex, int columnsIndex, bool active)
+        {
+            Color color = active ? Color.Khaki : Color.White;
+            Color header_color = active ? Color.DarkKhaki : Color.White;
+
+            dgv_main.ClearSelection();
+            dgv_main.Columns[columnsIndex].HeaderCell.Style.BackColor = header_color;
+            dgv_main.Rows[rowIndex].HeaderCell.Style.BackColor = header_color;
+
+            dgv_main.Columns[columnsIndex].DefaultCellStyle.BackColor = color;
+            dgv_main.Rows[rowIndex].DefaultCellStyle.BackColor = color;
+            Application.DoEvents();
         }
 
         public void Lock_interface(bool enable)
@@ -266,28 +302,83 @@ namespace Angioletti_Logistica
             {
                 a.Enabled = !enable;
             }
+
+            dgv_main.Enabled = true;
+            dgv_main.ReadOnly = enable;
+            list_execution.Enabled = true;
         }
 
         #region algoritmi
-        public int NordOvest()
+        public int NordOvest(int delay = 1000)
         {
+            list_execution.Items.Add($"Risoluzione tramite metodo del nord ovest");
+            list_execution.Items.Add("");
             int tot = (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value;
             int res = 0;
 
+            dgv_main.DefaultCellStyle.BackColor = Color.White;
+            Application.DoEvents();
+            System.Threading.Thread.Sleep(delay / 2);
+
             do
             {
-                string produttore = dgv_main.Rows[0].HeaderCell.Value.ToString();
-                string fornitore = dgv_main.Columns[0].HeaderCell.Value.ToString();
+
+                ColorCells(0, 0, true);
+                System.Threading.Thread.Sleep(delay / 2);
+
+
+                string fornitore = dgv_main.Rows[0].HeaderCell.Value.ToString();
+                string produttore = dgv_main.Columns[0].HeaderCell.Value.ToString();
                 int prezzo = (int)dgv_main.Rows[0].Cells[0].Value;
-                int val_p = (int)dgv_main.Rows[0].Cells[dgv_main.Columns.Count - 1].Value;
-                int val_f = (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[0].Value;
+                int val_f = (int)dgv_main.Rows[0].Cells[dgv_main.Columns.Count - 1].Value;
+                int val_p = (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[0].Value;
+                int spesa = -1;
 
+                if (val_p == val_f)
+                {
+                    spesa = prezzo * val_f;
 
+                    dgv_main.Rows.RemoveAt(0);
+                    dgv_main.Columns.RemoveAt(0);
 
-                System.Threading.Thread.Sleep(1000);
+                    dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = tot - val_f;
+                    list_execution.Items.Add($"Trasferiti {val_p} prodotti da {produttore} a {fornitore} a costo {prezzo} per un totale di {spesa}");
+                }
+                else if (val_p > val_f)
+                {
+                    spesa = prezzo * val_f;
+
+                    dgv_main.Rows.RemoveAt(0);
+                    dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[0].Value = (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[0].Value - val_f;
+
+                    dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = tot - val_f;
+                    list_execution.Items.Add($"Trasferiti {val_p} prodotti da {produttore} a {fornitore} a costo {prezzo} per un totale di {spesa}");
+                }
+                else if (val_f > val_p)
+                {
+                    spesa = prezzo * val_p;
+
+                    dgv_main.Columns.RemoveAt(0);
+                    dgv_main.Rows[0].Cells[dgv_main.Columns.Count - 1].Value = (int)dgv_main.Rows[0].Cells[dgv_main.Columns.Count - 1].Value - val_p;
+
+                    dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = tot - val_p;
+                    list_execution.Items.Add($"{val_f} prodotti da {produttore} a {fornitore} a costo {prezzo} per un totale di {spesa}");
+                }
+
                 tot = (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value;
+                res += spesa;
+
+                ColorCells(0, 0, false);
+                System.Threading.Thread.Sleep(delay / 2);
+
+
             } while (tot != 0);
-            
+
+            list_execution.Items.Add("");
+            list_execution.Items.Add($"Spesa totale utilizzando il metodo del nord ovest: {res}");
+            list_execution.Items.Add("");
+            list_execution.Items.Add("_______________________________________________________________________________________________________");
+            list_execution.Items.Add("");
 
             return res;
         }
@@ -316,5 +407,10 @@ namespace Angioletti_Logistica
             }
         }
         #endregion
+
+        private void btn_espandi_Click(object sender, EventArgs e)
+        {
+            (new frm_vis(list_execution)).ShowDialog();
+        }
     }
 }
