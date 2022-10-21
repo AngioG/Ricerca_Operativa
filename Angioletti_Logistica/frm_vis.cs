@@ -28,7 +28,13 @@ namespace Angioletti_Logistica
         private void frm_vis_Load(object sender, EventArgs e)
         {
             foreach (var item in _dati.Items)
-                list_main.Items.Add(item);
+            {
+                if (item.ToString().Length > 0 && int.TryParse(item.ToString().Substring(0, 1), out _))
+                    list_main.Items.Add("Trasportati " + item.ToString());
+                else
+                    list_main.Items.Add(item);
+            }
+
         }
     }
 }
