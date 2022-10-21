@@ -1,4 +1,5 @@
 using System.Data;
+using System.Threading;
 using System.Data.Common;
 using System.Windows.Forms;
 
@@ -113,6 +114,7 @@ namespace Angioletti_Logistica
 
         public void DatiCasuali(int Tot)
         {
+
             dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = Tot * 10;
             Random rng = new Random();
 
@@ -219,9 +221,12 @@ namespace Angioletti_Logistica
 
         private void btn_gen_Click(object sender, EventArgs e)
         {
-            if (dgv_main.Columns.Count == 0)
+
+            if (dgv_main.Columns.Count < 3 || dgv_main.Rows.Count < 3)
             {
-                MessageBox.Show("Devi prima creare una tabella", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Si è verificato un errore, prova a generare una nuova tabella", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+                btn_gen.Enabled = false;
                 return;
             }
 
@@ -275,8 +280,13 @@ namespace Angioletti_Logistica
             {
                 case 0:
                     {
-                        NordOvest((int)nud_delay.Value);
-                        System.Threading.Thread.Sleep(1000);
+                        Thread T_ex = new Thread(() => NordOvest((int)nud_delay.Value));
+                        T_ex.Start();
+                        do
+                        {
+                            Application.DoEvents();
+                        } while (T_ex.ThreadState == ThreadState.Running);
+                        Thread.Sleep(1000);
                         load_table_datas();
                         break;
                     }
@@ -353,8 +363,13 @@ namespace Angioletti_Logistica
         #region algoritmi
         public void NordOvest(int delay = 1000)
         {
-            list_execution.Items.Add($"Risoluzione tramite metodo del nord ovest");
-            list_execution.Items.Add("");
+            list_execution.Invoke(new Action(() =>
+            {
+                list_execution.Items.Add($"Risoluzione tramite metodo del nord ovest");
+                list_execution.Items.Add("");
+            }));
+
+
             int tot = (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value;
             int res = 0;
 
@@ -366,6 +381,7 @@ namespace Angioletti_Logistica
             {
 
                 ColorCells(0, 0, true);
+
                 System.Threading.Thread.Sleep(delay / 2);
 
 
@@ -380,32 +396,43 @@ namespace Angioletti_Logistica
                 {
                     spesa = prezzo * val_f;
 
-                    dgv_main.Rows.RemoveAt(0);
-                    dgv_main.Columns.RemoveAt(0);
+                    dgv_main.Invoke(new Action(() =>
+                    {
+                        dgv_main.Rows.RemoveAt(0);
+                        dgv_main.Columns.RemoveAt(0);
 
-                    dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = tot - val_f;
-                    list_execution.Items.Add($"{val_p} prodotti da {produttore} a {fornitore} a costo {prezzo} per un totale di {spesa}");
+                        dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = tot - val_f;
+                    }));
                 }
                 else if (val_p > val_f)
                 {
                     spesa = prezzo * val_f;
 
-                    dgv_main.Rows.RemoveAt(0);
-                    dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[0].Value = (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[0].Value - val_f;
+                    dgv_main.Invoke(new Action(() =>
+                    {
+                        dgv_main.Rows.RemoveAt(0);
+                        dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[0].Value = (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[0].Value - val_f;
 
-                    dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = tot - val_f;
-                    list_execution.Items.Add($"{val_p} prodotti da {produttore} a {fornitore} a costo {prezzo} per un totale di {spesa}");
+                        dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = tot - val_f;
+                    }));
                 }
                 else if (val_f > val_p)
                 {
                     spesa = prezzo * val_p;
 
-                    dgv_main.Columns.RemoveAt(0);
-                    dgv_main.Rows[0].Cells[dgv_main.Columns.Count - 1].Value = (int)dgv_main.Rows[0].Cells[dgv_main.Columns.Count - 1].Value - val_p;
+                    dgv_main.Invoke(new Action(() =>
+                    {
+                        dgv_main.Columns.RemoveAt(0);
+                        dgv_main.Rows[0].Cells[dgv_main.Columns.Count - 1].Value = (int)dgv_main.Rows[0].Cells[dgv_main.Columns.Count - 1].Value - val_p;
 
-                    dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = tot - val_p;
-                    list_execution.Items.Add($"{val_f} prodotti da {produttore} a {fornitore} a costo {prezzo} per un totale di {spesa}");
+                        dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = tot - val_p;
+                    }));
                 }
+
+                list_execution.Invoke(new Action(() =>
+                {
+                    list_execution.Items.Add($"{val_f} prodotti da {produttore} a {fornitore} a costo {prezzo} per un totale di {spesa}");
+                }));
 
                 tot = (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value;
                 res += spesa;
@@ -416,11 +443,14 @@ namespace Angioletti_Logistica
 
             } while (tot != 0);
 
-            list_execution.Items.Add("");
-            list_execution.Items.Add($"Spesa totale utilizzando il metodo del nord ovest: {res}");
-            list_execution.Items.Add("");
-            list_execution.Items.Add("_______________________________________________________________________________________________________");
-            list_execution.Items.Add("");
+            list_execution.Invoke(new Action(() =>
+            {
+                list_execution.Items.Add("");
+                list_execution.Items.Add($"Spesa totale utilizzando il metodo del nord ovest: {res}");
+                list_execution.Items.Add("");
+                list_execution.Items.Add("_______________________________________________________________________________________________________");
+                list_execution.Items.Add("");
+            }));
 
         }
         #endregion
