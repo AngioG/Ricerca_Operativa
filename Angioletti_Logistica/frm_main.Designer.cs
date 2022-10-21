@@ -364,7 +364,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(175, 25);
             this.label2.TabIndex = 1;
-            this.label2.Text = "Numero consumatori:";
+            this.label2.Text = "Numero produttori:";
             // 
             // label1
             // 
@@ -373,7 +373,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(175, 25);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Numero produttori:";
+            this.label1.Text = "Numero consumatori:";
             // 
             // dgv_main
             // 

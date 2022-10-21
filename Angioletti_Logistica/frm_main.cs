@@ -6,7 +6,11 @@ namespace Angioletti_Logistica
 {
     public partial class frm_main : Form
     {
-        //Color color { get; set; }
+        Color color { get; set; }
+
+        int saved_ncol { get; set; }
+        int saved_nrows { get; set; }
+        List<List<int>> saved_values { get; set; } = new List<List<int>>();
 
         public frm_main()
         {
@@ -17,60 +21,15 @@ namespace Angioletti_Logistica
         {
             this.ClientSize = new System.Drawing.Size(1400, 800);
             cmb_execute.SelectedIndex = 0;
-            //color = dgv_main.DefaultCellStyle.SelectionBackColor;
+            color = dgv_main.DefaultCellStyle.SelectionBackColor;
             dgv_main.DefaultCellStyle.SelectionForeColor = Color.White;
         }
 
         #region  input
         private void btn_chnge_table_Click(object sender, EventArgs e)
         {
-            #region setup
-            dgv_main.Columns.Clear();
-            DataGridViewCell dataGridViewCell = new DataGridViewTextBoxCell();
-            dgv_main.AutoGenerateColumns = false;
-            #endregion
-            #region columns
+            GenerateTable((int)nud_cons.Value, (int)nud_prod.Value);
 
-            for (int i = 0; i < nud_cons.Value; i++)
-            {
-                DataGridViewColumn column = new DataGridViewColumn();
-                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-
-                column.HeaderText = $"P{i + 1}";
-                column.CellTemplate = dataGridViewCell;
-                dgv_main.Columns.Add(column);
-            }
-
-            DataGridViewColumn last_column = new DataGridViewColumn();
-            last_column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            last_column.HeaderText = "Necessari";
-            last_column.CellTemplate = dataGridViewCell;
-            last_column.ReadOnly = true;
-            dgv_main.Columns.Add(last_column);
-            #endregion
-            #region rows
-            for (int i = 0; i < nud_prod.Value; i++)
-            {
-                DataGridViewRow row = (DataGridViewRow)dgv_main.RowTemplate.Clone();
-                row.CreateCells(dgv_main);
-
-                row.HeaderCell.Value = $"Up{i + 1}";
-
-                for (int x = 0; x < nud_cons.Value; x++)
-                {
-                    row.Cells[x].Value = 1;
-                    row.Cells[x].ValueType = typeof(int);
-                }
-
-                dgv_main.Rows.Add(row);
-            }
-
-            DataGridViewRow last_row = (DataGridViewRow)dgv_main.RowTemplate.Clone();
-            last_row.CreateCells(dgv_main);
-            last_row.HeaderCell.Value = $"Disponibili";
-            last_row.ReadOnly = true;
-            dgv_main.Rows.Add(last_row);
-            #endregion
             #region genera dati
             if (dgv_main.Columns.Count == 0)
             {
@@ -99,6 +58,57 @@ namespace Angioletti_Logistica
             }
             #endregion
             btn_execute.Enabled = true;
+        }
+
+        public void GenerateTable(int rows, int columns)
+        {
+            #region setup
+            dgv_main.Columns.Clear();
+            dgv_main.Rows.Clear();
+            DataGridViewCell dataGridViewCell = new DataGridViewTextBoxCell();
+            #endregion
+            #region columns
+
+            for (int i = 0; i < rows; i++)
+            {
+                DataGridViewColumn column = new DataGridViewColumn();
+                column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+
+                column.HeaderText = $"P{i + 1}";
+                column.CellTemplate = dataGridViewCell;
+                dgv_main.Columns.Add(column);
+            }
+
+            DataGridViewColumn last_column = new DataGridViewColumn();
+            last_column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            last_column.HeaderText = "Necessari";
+            last_column.CellTemplate = dataGridViewCell;
+            last_column.ReadOnly = true;
+            dgv_main.Columns.Add(last_column);
+            #endregion
+            #region rows
+            for (int i = 0; i < columns; i++)
+            {
+                DataGridViewRow row = (DataGridViewRow)dgv_main.RowTemplate.Clone();
+                row.CreateCells(dgv_main);
+
+                row.HeaderCell.Value = $"Up{i + 1}";
+
+                for (int x = 0; x < nud_cons.Value; x++)
+                {
+                    row.Cells[x].Value = 1;
+                    row.Cells[x].ValueType = typeof(int);
+                }
+
+                dgv_main.Rows.Add(row);
+            }
+
+            DataGridViewRow last_row = (DataGridViewRow)dgv_main.RowTemplate.Clone();
+            last_row.CreateCells(dgv_main);
+            last_row.HeaderCell.Value = $"Disponibili";
+            last_row.ReadOnly = true;
+            dgv_main.Rows.Add(last_row);
+            #endregion
         }
 
         public void DatiCasuali(int Tot)
@@ -246,17 +256,19 @@ namespace Angioletti_Logistica
                 return;
             }
 
+            #region interfaccia
+            this.CenterToScreen();
             this.ClientSize = new System.Drawing.Size(1750, 800);
             btn_espandi.Visible = true;
             list_execution.Visible = true;
             list_execution.Items.Clear();
-            this.CenterToScreen();
             dgv_main.DefaultCellStyle.SelectionForeColor = Color.Black;
-            Lock_interface(true);
-
             dgv_main.DefaultCellStyle.SelectionBackColor = dgv_main.DefaultCellStyle.BackColor;
-
             dgv_main.ClearSelection();
+            Lock_interface(true);
+            #endregion
+
+            save_table_datas();
 
             #region esecuzione
             switch (cmb_execute.SelectedIndex)
@@ -264,6 +276,8 @@ namespace Angioletti_Logistica
                 case 0:
                     {
                         NordOvest((int)nud_delay.Value);
+                        System.Threading.Thread.Sleep(1000);
+                        load_table_datas();
                         break;
                     }
                 case 1:
@@ -278,14 +292,39 @@ namespace Angioletti_Logistica
             Lock_interface(false);
             btn_execute.Enabled = false;
             dgv_main.DefaultCellStyle.SelectionForeColor = Color.White;
-            //dgv_main.DefaultCellStyle.SelectionBackColor = color;
-            
+            dgv_main.DefaultCellStyle.SelectionBackColor = color;
+
+        }
+
+        public void save_table_datas()
+        {
+            saved_ncol = dgv_main.Columns.Count - 1;
+            saved_nrows = dgv_main.Rows.Count - 1;
+
+            saved_values = new List<List<int>>();
+            for (int x = 0; x < dgv_main.Columns.Count; x++)
+                saved_values.Add(new List<int>());
+
+            for (int x = 0; x < dgv_main.Columns.Count; x++)
+                for (int y = 0; y < dgv_main.Rows.Count; y++)
+                    saved_values[x].Add((int)dgv_main.Rows[y].Cells[x].Value);
+
+        }
+
+        public void load_table_datas()
+        {
+            GenerateTable(saved_ncol, saved_nrows);
+
+            for (int x = 0; x < saved_nrows + 1; x++)
+                for (int y = 0; y < saved_ncol + 1; y++)
+                    dgv_main.Rows[x].Cells[y].Value = saved_values[y][x];
         }
 
         public void ColorCells(int rowIndex, int columnsIndex, bool active)
         {
             Color color = active ? Color.Khaki : Color.White;
             Color header_color = active ? Color.DarkKhaki : Color.White;
+            Color fore_color = active ? Color.Red : Color.Black;
 
             dgv_main.ClearSelection();
             dgv_main.Columns[columnsIndex].HeaderCell.Style.BackColor = header_color;
@@ -293,6 +332,9 @@ namespace Angioletti_Logistica
 
             dgv_main.Columns[columnsIndex].DefaultCellStyle.BackColor = color;
             dgv_main.Rows[rowIndex].DefaultCellStyle.BackColor = color;
+
+            dgv_main.Rows[0].Cells[0].Style.ForeColor = fore_color;
+
             Application.DoEvents();
         }
 
@@ -309,7 +351,7 @@ namespace Angioletti_Logistica
         }
 
         #region algoritmi
-        public int NordOvest(int delay = 1000)
+        public void NordOvest(int delay = 1000)
         {
             list_execution.Items.Add($"Risoluzione tramite metodo del nord ovest");
             list_execution.Items.Add("");
@@ -342,7 +384,7 @@ namespace Angioletti_Logistica
                     dgv_main.Columns.RemoveAt(0);
 
                     dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = tot - val_f;
-                    list_execution.Items.Add($"Trasferiti {val_p} prodotti da {produttore} a {fornitore} a costo {prezzo} per un totale di {spesa}");
+                    list_execution.Items.Add($"{val_p} prodotti da {produttore} a {fornitore} a costo {prezzo} per un totale di {spesa}");
                 }
                 else if (val_p > val_f)
                 {
@@ -352,7 +394,7 @@ namespace Angioletti_Logistica
                     dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[0].Value = (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[0].Value - val_f;
 
                     dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = tot - val_f;
-                    list_execution.Items.Add($"Trasferiti {val_p} prodotti da {produttore} a {fornitore} a costo {prezzo} per un totale di {spesa}");
+                    list_execution.Items.Add($"{val_p} prodotti da {produttore} a {fornitore} a costo {prezzo} per un totale di {spesa}");
                 }
                 else if (val_f > val_p)
                 {
@@ -380,7 +422,6 @@ namespace Angioletti_Logistica
             list_execution.Items.Add("_______________________________________________________________________________________________________");
             list_execution.Items.Add("");
 
-            return res;
         }
         #endregion
         #endregion
@@ -412,5 +453,6 @@ namespace Angioletti_Logistica
         {
             (new frm_vis(list_execution)).ShowDialog();
         }
+
     }
 }
