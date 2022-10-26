@@ -12,6 +12,7 @@ namespace Angioletti_Logistica
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             Application.Run(new frm_main());
+            
         }
     }
 }
