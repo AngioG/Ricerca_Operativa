@@ -162,7 +162,8 @@
             this.cmb_execute.FormattingEnabled = true;
             this.cmb_execute.Items.AddRange(new object[] {
             "Tutti",
-            "Nord-Ovest"});
+            "Nord-Ovest",
+            "Minimi Termini"});
             this.cmb_execute.Location = new System.Drawing.Point(1040, 50);
             this.cmb_execute.Name = "cmb_execute";
             this.cmb_execute.Size = new System.Drawing.Size(250, 25);
