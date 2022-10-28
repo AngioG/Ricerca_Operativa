@@ -111,7 +111,7 @@
             0});
             this.nud_delay.Location = new System.Drawing.Point(1585, 21);
             this.nud_delay.Maximum = new decimal(new int[] {
-            1500,
+            5000,
             0,
             0,
             0});
@@ -163,7 +163,8 @@
             this.cmb_execute.Items.AddRange(new object[] {
             "Tutti",
             "Nord-Ovest",
-            "Minimi Termini"});
+            "Minimi Costi",
+            "Vogel"});
             this.cmb_execute.Location = new System.Drawing.Point(1040, 50);
             this.cmb_execute.Name = "cmb_execute";
             this.cmb_execute.Size = new System.Drawing.Size(250, 25);
