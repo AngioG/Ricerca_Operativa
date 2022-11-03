@@ -289,6 +289,7 @@
             // 
             // btn_gen
             // 
+            this.btn_gen.Enabled = false;
             this.btn_gen.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.btn_gen.Location = new System.Drawing.Point(925, 15);
             this.btn_gen.Name = "btn_gen";
@@ -394,7 +395,7 @@
             this.dgv_main.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dgv_main.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgv_main.EnableHeadersVisualStyles = false;
-            this.dgv_main.Location = new System.Drawing.Point(25, 175);
+            this.dgv_main.Location = new System.Drawing.Point(44, 175);
             this.dgv_main.Name = "dgv_main";
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.ControlLightLight;
@@ -410,7 +411,7 @@
             this.dgv_main.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dgv_main.Size = new System.Drawing.Size(1350, 600);
             this.dgv_main.TabIndex = 2;
-            this.dgv_main.CellLeave += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_main_CellLeave);
+            this.dgv_main.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_main_CellLeave);
             this.dgv_main.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.dgv_main_EditingControlShowing);
             // 
             // list_execution
