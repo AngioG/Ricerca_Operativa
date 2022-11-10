@@ -110,6 +110,11 @@ namespace Angioletti_Logistica
             DataGridViewRow last_row = (DataGridViewRow)dgv_main.RowTemplate.Clone();
             last_row.CreateCells(dgv_main);
             last_row.HeaderCell.Value = $"Disponibili";
+            for (int x = 0; x < nud_cons.Value; x++)
+            {
+                last_row.Cells[x].Value = 1;
+                last_row.Cells[x].ValueType = typeof(int);
+            }
             dgv_main.Rows.Add(last_row);
             #endregion
         }
@@ -344,7 +349,7 @@ namespace Angioletti_Logistica
 
             for (int x = 0; x < dgv_main.Columns.Count; x++)
                 for (int y = 0; y < dgv_main.Rows.Count; y++)
-                    saved_values[x].Add((int)dgv_main.Rows[y].Cells[x].Value);
+                    saved_values[x].Add((int)(dgv_main.Rows[y].Cells[x].Value));
 
         }
 
@@ -594,7 +599,7 @@ namespace Angioletti_Logistica
                     dgv_main.Invoke(new Action(() =>
                     {
                         dgv_main.Rows.RemoveAt(X);
-                        dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[X].Value = (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[Y].Value - val_c;
+                        dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[Y].Value = (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[Y].Value - val_c;
 
                         dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = tot - val_c;
                         dgv_main.ClearSelection();
@@ -802,7 +807,7 @@ namespace Angioletti_Logistica
                     dgv_main.Invoke(new Action(() =>
                     {
                         dgv_main.Columns.RemoveAt(Y);
-                        dgv_main.Rows[X].Cells[dgv_main.Columns.Count - 2].Value = (int)dgv_main.Rows[Y].Cells[dgv_main.Columns.Count - 2].Value - val_p;
+                        dgv_main.Rows[X].Cells[dgv_main.Columns.Count - 2].Value = (int)dgv_main.Rows[X].Cells[dgv_main.Columns.Count - 2].Value - val_p;
 
                         dgv_main.Rows[dgv_main.Rows.Count - 2].Cells[dgv_main.Columns.Count - 2].Value = tot - val_p;
                         dgv_main.ClearSelection();
@@ -1006,11 +1011,11 @@ namespace Angioletti_Logistica
                 #region Controllo totali
                 var col = 0;
                 for (int i = 0; i < dgv_main.Rows.Count - 1; i++)
-                    col += int.Parse(dgv_main.Rows[i].Cells[dgv_main.Columns.Count - 1].Value.ToString());
+                    col += (int)dgv_main.Rows[i].Cells[dgv_main.Columns.Count - 1].Value;
 
                 var row = 0;
                 for (int i = 0; i < dgv_main.Columns.Count - 1; i++)
-                    row += int.Parse(dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[i].Value.ToString());
+                    row += (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[i].Value;
 
                 if (col != row)
                 {
