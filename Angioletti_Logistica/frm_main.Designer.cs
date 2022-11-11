@@ -375,7 +375,8 @@
             "Tutti",
             "Nord-Ovest",
             "Minimi Costi",
-            "Vogel"});
+            "Vogel",
+            "Russel"});
             this.cmb_execute.Location = new System.Drawing.Point(111, 40);
             this.cmb_execute.Name = "cmb_execute";
             this.cmb_execute.Size = new System.Drawing.Size(214, 25);
