@@ -153,11 +153,6 @@
             // 
             this.nud_max.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.nud_max.Location = new System.Drawing.Point(878, 64);
-            this.nud_max.Maximum = new decimal(new int[] {
-            50,
-            0,
-            0,
-            0});
             this.nud_max.Minimum = new decimal(new int[] {
             20,
             0,
@@ -167,7 +162,7 @@
             this.nud_max.Size = new System.Drawing.Size(50, 25);
             this.nud_max.TabIndex = 10;
             this.nud_max.Value = new decimal(new int[] {
-            30,
+            50,
             0,
             0,
             0});
@@ -376,7 +371,7 @@
             "Nord-Ovest",
             "Minimi Costi",
             "Vogel",
-            "Russel"});
+            "Russell"});
             this.cmb_execute.Location = new System.Drawing.Point(111, 40);
             this.cmb_execute.Name = "cmb_execute";
             this.cmb_execute.Size = new System.Drawing.Size(214, 25);
