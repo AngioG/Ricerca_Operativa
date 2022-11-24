@@ -12,8 +12,8 @@ namespace Angioletti_Logistica
 
         bool esecuzione { get; set; } = false;
 
-        int saved_ncol { get; set; }
-        int saved_nrows { get; set; }
+        /*int saved_ncol { get; set; }
+        int saved_nrows { get; set; }*/
         List<List<int>> saved_values { get; set; } = new List<List<int>>();
 
         public frm_main()
@@ -102,7 +102,7 @@ namespace Angioletti_Logistica
 
                 row.HeaderCell.Value = $"Up{i + 1}";
 
-                for (int x = 0; x < nud_cons.Value; x++)
+                for (int x = 0; x < nud_cons.Value + 1; x++)
                 {
                     row.Cells[x].Value = 1;
                     row.Cells[x].ValueType = typeof(int);
@@ -114,7 +114,7 @@ namespace Angioletti_Logistica
             DataGridViewRow last_row = (DataGridViewRow)dgv_main.RowTemplate.Clone();
             last_row.CreateCells(dgv_main);
             last_row.HeaderCell.Value = $"Disponibili";
-            for (int x = 0; x < nud_cons.Value; x++)
+            for (int x = 0; x < nud_cons.Value + 1; x++)
             {
                 last_row.Cells[x].Value = 1;
                 last_row.Cells[x].ValueType = typeof(int);
@@ -305,7 +305,7 @@ namespace Angioletti_Logistica
                         Thread.Sleep(1000);
                         load_table_datas();
 
-                        await Task.Run(() => Russel());
+                        await Task.Run(() => Russell());
                         Thread.Sleep(1000);
                         load_table_datas();
 
@@ -335,7 +335,7 @@ namespace Angioletti_Logistica
                     }
                 case 4:
                     {
-                        await Task.Run(() => Russel());
+                        await Task.Run(() => Russell());
                         Thread.Sleep(1000);
                         load_table_datas();
 
@@ -356,8 +356,6 @@ namespace Angioletti_Logistica
 
         public void save_table_datas()
         {
-            saved_ncol = dgv_main.Columns.Count - 1;
-            saved_nrows = dgv_main.Rows.Count - 1;
 
             saved_values = new List<List<int>>();
             for (int x = 0; x < dgv_main.Columns.Count; x++)
@@ -369,12 +367,15 @@ namespace Angioletti_Logistica
 
         }
 
-        public void load_table_datas()
+        public void load_table_datas(List<List<int>> datas = null)
         {
-            GenerateTable(saved_ncol, saved_nrows);
+            if (datas == null)
+                datas = saved_values;
 
-            for (int x = 0; x < saved_nrows + 1; x++)
-                for (int y = 0; y < saved_ncol + 1; y++)
+            GenerateTable(datas.Count - 1, datas[0].Count - 1);
+
+            for (int x = 0; x < datas[0].Count; x++)
+                for (int y = 0; y < datas.Count; y++)
                     dgv_main.Rows[x].Cells[y].Value = saved_values[y][x];
         }
 
@@ -965,11 +966,11 @@ namespace Angioletti_Logistica
 
         }
 
-        public void Russel()
+        public async void Russell()
         {
             list_execution.Invoke(new Action(() =>
             {
-                list_execution.Items.Add($"Risoluzione tramite metodo di Russel");
+                list_execution.Items.Add($"Risoluzione tramite metodo di Russell");
                 list_execution.Items.Add("");
             }));
 
@@ -988,8 +989,10 @@ namespace Angioletti_Logistica
 
             do
             {
+               
                 dgv_main.ClearSelection();
 
+                #region Calcolo scarti
                 List<CellData> Massimi = new List<CellData>();
                 for (int x = 0; x < dgv_main.Rows.Count - 1; x++)
                 {
@@ -1023,21 +1026,24 @@ namespace Angioletti_Logistica
                     {
                         dgv_main.Rows[c.x].Cells[c.y].Style.ForeColor = Color.Red;
                     }));
+                #endregion
 
+                System.Threading.Thread.Sleep(((int)nud_delay.Value) / 3);
 
+                #region Salvataggio dati in lista
                 tab_vecchia = new List<List<int>>();
                 for (int x = 0; x < dgv_main.Columns.Count - 1; x++)
                     tab_vecchia.Add(new List<int>());
 
-                for (int x = 0; x < dgv_main.Columns.Count - 1; x++)
-                    for (int y = 0; y < dgv_main.Rows.Count - 1; y++)
+                for (int y = 0; y < dgv_main.Columns.Count - 1; y++)
+                    for (int x = 0; x < dgv_main.Rows.Count - 1; x++)
                     {
-                        tab_vecchia[x].Add((int)(dgv_main.Rows[y].Cells[x].Value));
+                        tab_vecchia[y].Add((int)(dgv_main.Rows[x].Cells[y].Value));
 
-                        foreach (var c in Massimi.Where(c => c.x == x || c.y == y))
+                        foreach (var c in Massimi.Where(c => c.y == y || c.x == x))
                             list_execution.Invoke(new Action(() =>
                             {
-                                dgv_main.Rows[y].Cells[x].Value = (int)(dgv_main.Rows[y].Cells[x].Value) - c.Value;
+                                dgv_main.Rows[x].Cells[y].Value = (int)(dgv_main.Rows[x].Cells[y].Value) - c.Value;
                             }));
 
 
@@ -1046,14 +1052,22 @@ namespace Angioletti_Logistica
                             dgv_main.Rows[x].Cells[y].Style.ForeColor = Color.Black;
                         }));
                     }
+                #endregion
 
-
-
-
-
-                System.Threading.Thread.Sleep(((int)nud_delay.Value) / 3);
                 int X = 0;
                 int Y = 0;
+                int min = 1;
+
+                for (int y = 0; y < dgv_main.Columns.Count - 1; y++)
+                    for (int x = 0; x < dgv_main.Rows.Count - 1; x++)
+                        if ((int)dgv_main.Rows[x].Cells[y].Value < min)
+                        {
+                            min = (int)dgv_main.Rows[x].Cells[y].Value;
+                            X = x;
+                            Y = y;
+                        }
+
+
 
 
                 dgv_main.Invoke(new Action(() =>
@@ -1065,9 +1079,9 @@ namespace Angioletti_Logistica
 
                 string cliente = dgv_main.Rows[X].HeaderCell.Value.ToString();
                 string produttore = dgv_main.Columns[Y].HeaderCell.Value.ToString();
-                int prezzo = (int)dgv_main.Rows[X].Cells[Y].Value;
-                int val_c = (int)dgv_main.Rows[X].Cells[dgv_main.Columns.Count - 2].Value;
-                int val_p = (int)dgv_main.Rows[dgv_main.Rows.Count - 2].Cells[Y].Value;
+                int prezzo = tab_vecchia[Y][X];
+                int val_c = (int)dgv_main.Rows[X].Cells[dgv_main.Columns.Count - 1].Value;
+                int val_p = (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[Y].Value;
                 int spesa = -1;
 
                 if (val_p == val_c)
@@ -1079,9 +1093,14 @@ namespace Angioletti_Logistica
                         dgv_main.Rows.RemoveAt(X);
                         dgv_main.Columns.RemoveAt(Y);
 
-                        dgv_main.Rows[dgv_main.Rows.Count - 2].Cells[dgv_main.Columns.Count - 2].Value = tot - val_c;
+                        dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = tot - val_c;
                         dgv_main.ClearSelection();
                     }));
+
+                    foreach (var column in tab_vecchia)
+                        column.RemoveAt(X);
+
+                    tab_vecchia.RemoveAt(Y);
 
                     list_execution.Invoke(new Action(() =>
                     {
@@ -1095,11 +1114,15 @@ namespace Angioletti_Logistica
                     dgv_main.Invoke(new Action(() =>
                     {
                         dgv_main.Rows.RemoveAt(X);
-                        dgv_main.Rows[dgv_main.Rows.Count - 2].Cells[Y].Value = (int)dgv_main.Rows[dgv_main.Rows.Count - 2].Cells[Y].Value - val_c;
+                        dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[Y].Value = (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[Y].Value - val_c;
 
-                        dgv_main.Rows[dgv_main.Rows.Count - 2].Cells[dgv_main.Columns.Count - 2].Value = tot - val_c;
+                        dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = tot - val_c;
                         dgv_main.ClearSelection();
                     }));
+
+                    foreach (var column in tab_vecchia)
+                        column.RemoveAt(X);
+
 
                     list_execution.Invoke(new Action(() =>
                     {
@@ -1113,11 +1136,13 @@ namespace Angioletti_Logistica
                     dgv_main.Invoke(new Action(() =>
                     {
                         dgv_main.Columns.RemoveAt(Y);
-                        dgv_main.Rows[X].Cells[dgv_main.Columns.Count - 2].Value = (int)dgv_main.Rows[X].Cells[dgv_main.Columns.Count - 2].Value - val_p;
+                        dgv_main.Rows[X].Cells[dgv_main.Columns.Count - 1].Value = (int)dgv_main.Rows[X].Cells[dgv_main.Columns.Count - 1].Value - val_p;
 
-                        dgv_main.Rows[dgv_main.Rows.Count - 2].Cells[dgv_main.Columns.Count - 2].Value = tot - val_p;
+                        dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = tot - val_p;
                         dgv_main.ClearSelection();
                     }));
+
+                    tab_vecchia.RemoveAt(Y);
 
                     list_execution.Invoke(new Action(() =>
                     {
@@ -1125,9 +1150,10 @@ namespace Angioletti_Logistica
                     }));
                 }
 
+                
+                
 
-
-                tot = (int)dgv_main.Rows[dgv_main.Rows.Count - 2].Cells[dgv_main.Columns.Count - 2].Value;
+                tot = (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value;
                 res += spesa;
 
 
@@ -1138,16 +1164,30 @@ namespace Angioletti_Logistica
 
 
 
+                for (int x = 0; x < dgv_main.Rows.Count - 1; x++)
+                    for (int y = 0; y < dgv_main.Columns.Count - 1; y++)
+                        dgv_main.Invoke(new Action(() =>
+                        {
+                            dgv_main.Rows[x].Cells[y].Value = tab_vecchia[y][x];
+                        }));
+
+
+                var breakpoint = 0;
+
+
             } while (tot != 0);
+
+
 
             list_execution.Invoke(new Action(() =>
             {
                 list_execution.Items.Add("");
-                list_execution.Items.Add($"Spesa totale utilizzando il metodo di Russel: {res}");
+                list_execution.Items.Add($"Spesa totale utilizzando il metodo di Russell: {res}");
                 list_execution.Items.Add("");
                 list_execution.Items.Add("_______________________________________________________________________________________________________");
                 list_execution.Items.Add("");
             }));
+
         }
         #endregion
         #endregion
