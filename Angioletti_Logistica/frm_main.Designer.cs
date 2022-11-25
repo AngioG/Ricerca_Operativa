@@ -32,6 +32,7 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lbl_title = new System.Windows.Forms.Label();
             this.pan_data = new System.Windows.Forms.Panel();
+            this.chk_gen = new System.Windows.Forms.CheckBox();
             this.chk_random = new System.Windows.Forms.CheckBox();
             this.nud_tot = new System.Windows.Forms.NumericUpDown();
             this.label5 = new System.Windows.Forms.Label();
@@ -80,6 +81,7 @@
             // 
             // pan_data
             // 
+            this.pan_data.Controls.Add(this.chk_gen);
             this.pan_data.Controls.Add(this.chk_random);
             this.pan_data.Controls.Add(this.nud_tot);
             this.pan_data.Controls.Add(this.label5);
@@ -97,6 +99,18 @@
             this.pan_data.Name = "pan_data";
             this.pan_data.Size = new System.Drawing.Size(1118, 105);
             this.pan_data.TabIndex = 1;
+            // 
+            // chk_gen
+            // 
+            this.chk_gen.AutoSize = true;
+            this.chk_gen.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.chk_gen.Location = new System.Drawing.Point(252, 71);
+            this.chk_gen.Name = "chk_gen";
+            this.chk_gen.Size = new System.Drawing.Size(155, 25);
+            this.chk_gen.TabIndex = 14;
+            this.chk_gen.Text = "Non generare dati";
+            this.chk_gen.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.chk_gen.UseVisualStyleBackColor = true;
             // 
             // chk_random
             // 
@@ -162,7 +176,7 @@
             this.nud_max.Size = new System.Drawing.Size(50, 25);
             this.nud_max.TabIndex = 10;
             this.nud_max.Value = new decimal(new int[] {
-            50,
+            80,
             0,
             0,
             0});
@@ -392,6 +406,7 @@
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
             this.dgv_main.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.dgv_main.ColumnHeadersHeight = 35;
             this.dgv_main.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dgv_main.EnableHeadersVisualStyles = false;
             this.dgv_main.Location = new System.Drawing.Point(25, 175);
@@ -406,7 +421,7 @@
             this.dgv_main.RowHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dgv_main.RowHeadersWidth = 120;
             this.dgv_main.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            this.dgv_main.RowTemplate.Height = 25;
+            this.dgv_main.RowTemplate.Height = 35;
             this.dgv_main.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
             this.dgv_main.Size = new System.Drawing.Size(1350, 600);
             this.dgv_main.TabIndex = 2;
@@ -517,5 +532,6 @@
         private Label label7;
         private Panel pan_ex;
         private Button btn_esp_dat;
+        private CheckBox chk_gen;
     }
 }

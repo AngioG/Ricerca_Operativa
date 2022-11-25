@@ -45,25 +45,30 @@ namespace Angioletti_Logistica
                 return;
             }
 
-            Random rng = new Random();
+            if(!chk_gen.Checked)
+            {
+                Random rng = new Random();
 
-            for (int r = 0; r < dgv_main.Rows.Count - 1; r++)
-                for (int c = 0; c < dgv_main.Columns.Count - 1; c++)
+                for (int r = 0; r < dgv_main.Rows.Count - 1; r++)
+                    for (int c = 0; c < dgv_main.Columns.Count - 1; c++)
+                    {
+                        int n = rng.Next((int)nud_min.Value, (int)nud_max.Value);
+                        dgv_main.Rows[r].Cells[c].Value = n;
+                    }
+
+                if (chk_random.Checked)
                 {
-                    int n = rng.Next((int)nud_min.Value, (int)nud_max.Value);
-                    dgv_main.Rows[r].Cells[c].Value = n;
+                    int min = (int)(dgv_main.Columns.Count > dgv_main.Rows.Count ? dgv_main.Columns.Count - 1 : dgv_main.Rows.Count - 1);
+                    min = (2 * min + 1) * 10;
+                    DatiCasuali(new Random().Next(min, 150));
                 }
+                else
+                {
+                    DatiCasuali((int)nud_tot.Value / 10);
+                }
+            }
 
-            if (chk_random.Checked)
-            {
-                int min = (int)(dgv_main.Columns.Count > dgv_main.Rows.Count ? dgv_main.Columns.Count - 1 : dgv_main.Rows.Count - 1);
-                min = (2 * min + 1) * 10;
-                DatiCasuali(new Random().Next(min, 150));
-            }
-            else
-            {
-                DatiCasuali((int)nud_tot.Value / 10);
-            }
+
             #endregion
             btn_execute.Enabled = true;
             btn_gen.Enabled = true;
@@ -83,7 +88,7 @@ namespace Angioletti_Logistica
                 DataGridViewColumn column = new DataGridViewColumn();
                 column.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
 
-                column.HeaderText = $"P{i + 1}";
+                column.HeaderText = $"D{i + 1}";
                 column.CellTemplate = dataGridViewCell;
                 dgv_main.Columns.Add(column);
             }
@@ -104,7 +109,7 @@ namespace Angioletti_Logistica
 
                 for (int x = 0; x < nud_cons.Value + 1; x++)
                 {
-                    row.Cells[x].Value = 1;
+                    row.Cells[x].Value = 0;
                     row.Cells[x].ValueType = typeof(int);
                 }
 
@@ -116,7 +121,7 @@ namespace Angioletti_Logistica
             last_row.HeaderCell.Value = $"Disponibili";
             for (int x = 0; x < nud_cons.Value + 1; x++)
             {
-                last_row.Cells[x].Value = 1;
+                last_row.Cells[x].Value = 0;
                 last_row.Cells[x].ValueType = typeof(int);
             }
             dgv_main.Rows.Add(last_row);
@@ -268,9 +273,85 @@ namespace Angioletti_Logistica
         {
             if (dgv_main.Rows.Count <= 2 || dgv_main.Columns.Count <= 2)
             {
-                btn_execute.Enabled = false;
+                MessageBox.Show("Devi prima creare una tabella", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
+            for (int x = 0; x < dgv_main.Rows.Count; x++)
+                for (int y = 0; y < dgv_main.Columns.Count; y++)
+                    if ((int)dgv_main.Rows[x].Cells[y].Value == 0)
+                    {
+                        MessageBox.Show("La tabella non può contenere uno zero", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+
+            #region Controllo totali
+            var col = 0;
+            for (int i = 0; i < dgv_main.Rows.Count - 1; i++)
+                col += (int)dgv_main.Rows[i].Cells[dgv_main.Columns.Count - 1].Value;
+
+            var row = 0;
+            for (int i = 0; i < dgv_main.Columns.Count - 1; i++)
+                row += (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[i].Value;
+
+            if (col != row)
+            {
+                DialogResult dr = MessageBox.Show($"I valori dei totali non coincidono, aumentare casualmente la merce {(col > row ? "disponibile dei produttori" : "rischiesta dai consumatori")}?", "ATTENZIONE", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+                if (dr == DialogResult.No || dr == DialogResult.Abort)
+                    return;
+
+
+                if (col > row)
+                {
+                    Random rng = new Random();
+
+                    if ((col - row) % 10 != 0)
+                    {
+                        var RandomCell = dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[rng.Next(0, dgv_main.Columns.Count)];
+                        RandomCell.Value = (int)RandomCell.Value + (col - row) % 10;
+
+                        row += (col - row) % 10;
+                    }
+
+
+                    while (col != row)
+                    {
+                        var RandomCell = dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[rng.Next(0, dgv_main.Columns.Count)];
+                        RandomCell.Value = (int)RandomCell.Value + 10;
+
+                        row += 10;
+                    }
+                }
+                else
+                {
+                    Random rng = new Random();
+
+                    if ((row - col) % 10 != 0)
+                    {
+                        var RandomCell = dgv_main.Rows[rng.Next(0, dgv_main.Rows.Count)].Cells[dgv_main.Columns.Count - 1];
+                        RandomCell.Value = (int)RandomCell.Value + (row - col) % 10;
+
+                        col += (row - col) % 10;
+                    }
+
+
+                    while (col != row)
+                    {
+                        var RandomCell = dgv_main.Rows[rng.Next(0, dgv_main.Rows.Count - 1)].Cells[dgv_main.Columns.Count - 1];
+                        RandomCell.Value = (int)RandomCell.Value + 10;
+
+                        col += 10;
+                    }
+                }
+
+                
+
+            }
+            dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = col;
+
+            Application.DoEvents();
+            #endregion
 
             #region interfaccia
             this.ClientSize = new System.Drawing.Size(1750, 800);
@@ -1040,10 +1121,13 @@ namespace Angioletti_Logistica
                     {
                         tab_vecchia[y].Add((int)(dgv_main.Rows[x].Cells[y].Value));
 
-                        foreach (var c in Massimi.Where(c => c.y == y || c.x == x))
-                            list_execution.Invoke(new Action(() =>
+                        int value = (int)(dgv_main.Rows[x].Cells[y].Value);
+                        value -= Massimi.Where(c => c.y == y).Max(c => c.Value);
+                        value -= Massimi.Where(c => c.x == x).Max(c => c.Value);
+
+                        list_execution.Invoke(new Action(() =>
                             {
-                                dgv_main.Rows[x].Cells[y].Value = (int)(dgv_main.Rows[x].Cells[y].Value) - c.Value;
+                                dgv_main.Rows[x].Cells[y].Value = value;
                             }));
 
 
@@ -1242,78 +1326,7 @@ namespace Angioletti_Logistica
         {
             if (!esecuzione)
             {
-                if (dgv_main.Rows.Count <= 2 || dgv_main.Columns.Count <= 2)
-                {
-                    MessageBox.Show("Devi prima creare una tabella", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-
-                #region Controllo totali
-                var col = 0;
-                for (int i = 0; i < dgv_main.Rows.Count - 1; i++)
-                    col += (int)dgv_main.Rows[i].Cells[dgv_main.Columns.Count - 1].Value;
-
-                var row = 0;
-                for (int i = 0; i < dgv_main.Columns.Count - 1; i++)
-                    row += (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[i].Value;
-
-                if (col != row)
-                {
-                    DialogResult dr = MessageBox.Show($"I valori dei totali non coincidono, aumentare casualmente la merce {(col > row ? "disponibile dei produttori" : "rischiesta dai consumatori")}?", "ATTENZIONE", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-
-                    if (dr == DialogResult.No || dr == DialogResult.Abort)
-                        return;
-
-
-                    if (col > row)
-                    {
-                        Random rng = new Random();
-
-                        if ((col - row) % 10 != 0)
-                        {
-                            var RandomCell = dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[rng.Next(0, dgv_main.Columns.Count)];
-                            RandomCell.Value = (int)RandomCell.Value + (col - row) % 10;
-
-                            row += (col - row) % 10;
-                        }
-
-
-                        while (col != row)
-                        {
-                            var RandomCell = dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[rng.Next(0, dgv_main.Columns.Count)];
-                            RandomCell.Value = (int)RandomCell.Value + 10;
-
-                            row += 10;
-                        }
-                    }
-                    else
-                    {
-                        Random rng = new Random();
-
-                        if ((row - col) % 10 != 0)
-                        {
-                            var RandomCell = dgv_main.Rows[rng.Next(0, dgv_main.Rows.Count)].Cells[dgv_main.Columns.Count - 1];
-                            RandomCell.Value = (int)RandomCell.Value + (row - col) % 10;
-
-                            col += (row - col) % 10;
-                        }
-
-
-                        while (col != row)
-                        {
-                            var RandomCell = dgv_main.Rows[rng.Next(0, dgv_main.Rows.Count - 1)].Cells[dgv_main.Columns.Count - 1];
-                            RandomCell.Value = (int)RandomCell.Value + 10;
-
-                            col += 10;
-                        }
-                    }
-
-                    dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = col;
-
-                }
-                Application.DoEvents();
-                #endregion
+                
 
 
                 this.ClientSize = new System.Drawing.Size(1750, 800);
@@ -1325,10 +1338,10 @@ namespace Angioletti_Logistica
                 btn_espandi.Visible = true;
                 list_execution.Items.Clear();
 
-                dgv_main.ReadOnly = true;
+                /*dgv_main.ReadOnly = true;
                 dgv_main.ClearSelection();
 
-                pan_data.Enabled = false;
+                pan_data.Enabled = false;*/
 
                 esecuzione = true;
             }
