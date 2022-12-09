@@ -32,6 +32,7 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.lbl_title = new System.Windows.Forms.Label();
             this.pan_data = new System.Windows.Forms.Panel();
+            this.btn_ex = new System.Windows.Forms.Button();
             this.chk_gen = new System.Windows.Forms.CheckBox();
             this.chk_random = new System.Windows.Forms.CheckBox();
             this.nud_tot = new System.Windows.Forms.NumericUpDown();
@@ -81,6 +82,7 @@
             // 
             // pan_data
             // 
+            this.pan_data.Controls.Add(this.btn_ex);
             this.pan_data.Controls.Add(this.chk_gen);
             this.pan_data.Controls.Add(this.chk_random);
             this.pan_data.Controls.Add(this.nud_tot);
@@ -99,6 +101,18 @@
             this.pan_data.Name = "pan_data";
             this.pan_data.Size = new System.Drawing.Size(1118, 105);
             this.pan_data.TabIndex = 1;
+            // 
+            // btn_ex
+            // 
+            this.btn_ex.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.btn_ex.Location = new System.Drawing.Point(627, 14);
+            this.btn_ex.Name = "btn_ex";
+            this.btn_ex.Size = new System.Drawing.Size(75, 75);
+            this.btn_ex.TabIndex = 15;
+            this.btn_ex.TabStop = false;
+            this.btn_ex.Text = "Genera la tabella di esempio";
+            this.btn_ex.UseVisualStyleBackColor = true;
+            this.btn_ex.Click += new System.EventHandler(this.btn_ex_Click);
             // 
             // chk_gen
             // 
@@ -135,7 +149,7 @@
             0});
             this.nud_tot.Location = new System.Drawing.Point(462, 20);
             this.nud_tot.Maximum = new decimal(new int[] {
-            1500,
+            10000,
             0,
             0,
             0});
@@ -166,7 +180,7 @@
             // nud_max
             // 
             this.nud_max.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.nud_max.Location = new System.Drawing.Point(878, 64);
+            this.nud_max.Location = new System.Drawing.Point(954, 63);
             this.nud_max.Minimum = new decimal(new int[] {
             20,
             0,
@@ -185,7 +199,7 @@
             // label4
             // 
             this.label4.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label4.Location = new System.Drawing.Point(693, 64);
+            this.label4.Location = new System.Drawing.Point(769, 63);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(190, 25);
             this.label4.TabIndex = 9;
@@ -194,7 +208,7 @@
             // nud_min
             // 
             this.nud_min.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.nud_min.Location = new System.Drawing.Point(878, 20);
+            this.nud_min.Location = new System.Drawing.Point(954, 19);
             this.nud_min.Maximum = new decimal(new int[] {
             30,
             0,
@@ -218,7 +232,7 @@
             // label3
             // 
             this.label3.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label3.Location = new System.Drawing.Point(693, 20);
+            this.label3.Location = new System.Drawing.Point(769, 19);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(190, 25);
             this.label3.TabIndex = 7;
@@ -228,7 +242,7 @@
             // 
             this.btn_gen.Enabled = false;
             this.btn_gen.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.btn_gen.Location = new System.Drawing.Point(953, 15);
+            this.btn_gen.Location = new System.Drawing.Point(1029, 14);
             this.btn_gen.Name = "btn_gen";
             this.btn_gen.Size = new System.Drawing.Size(75, 75);
             this.btn_gen.TabIndex = 6;
@@ -533,5 +547,6 @@
         private Panel pan_ex;
         private Button btn_esp_dat;
         private CheckBox chk_gen;
+        private Button btn_ex;
     }
 }
