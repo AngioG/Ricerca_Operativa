@@ -12,16 +12,13 @@ namespace Angioletti_Logistica
 
         bool esecuzione { get; set; } = false;
 
-        /*int saved_ncol { get; set; }
-        int saved_nrows { get; set; }*/
         List<List<int>> saved_values { get; set; } = new List<List<int>>();
+
+        public frm_vis Espandi { get; set; }
 
         public frm_main()
         {
             InitializeComponent();
-#if DEBUG
-            cmb_execute.SelectedIndex = 4;
-#endif
         }
 
         private void frm_main_Load(object sender, EventArgs e)
@@ -60,7 +57,7 @@ namespace Angioletti_Logistica
                 {
                     int min = (int)(dgv_main.Columns.Count > dgv_main.Rows.Count ? dgv_main.Columns.Count - 1 : dgv_main.Rows.Count - 1);
                     min = (2 * min + 1) * 10;
-                    DatiCasuali(new Random().Next(min, 150));
+                    DatiCasuali(new Random().Next(min, 1000));
                 }
                 else
                 {
@@ -107,7 +104,7 @@ namespace Angioletti_Logistica
 
                 row.HeaderCell.Value = $"Up{i + 1}";
 
-                for (int x = 0; x < nud_cons.Value + 1; x++)
+                for (int x = 0; x < rows + 1; x++)
                 {
                     row.Cells[x].Value = 0;
                     row.Cells[x].ValueType = typeof(int);
@@ -119,7 +116,7 @@ namespace Angioletti_Logistica
             DataGridViewRow last_row = (DataGridViewRow)dgv_main.RowTemplate.Clone();
             last_row.CreateCells(dgv_main);
             last_row.HeaderCell.Value = $"Disponibili";
-            for (int x = 0; x < nud_cons.Value + 1; x++)
+            for (int x = 0; x < rows + 1; x++)
             {
                 last_row.Cells[x].Value = 0;
                 last_row.Cells[x].ValueType = typeof(int);
@@ -266,11 +263,95 @@ namespace Angioletti_Logistica
                 DatiCasuali((int)nud_tot.Value / 10);
             }
         }
+
+        private void btn_espandi_Click(object sender, EventArgs e)
+        {
+            if (Espandi != null) return;
+
+            Espandi = (new frm_vis(list_execution));
+            Espandi.Show();
+        }
+
+        private void btn_esp_Click(object sender, EventArgs e)
+        {
+            if (!esecuzione)
+            {
+                this.ClientSize = new System.Drawing.Size(1750, 800);
+                this.CenterToScreen();
+
+                btn_esp_dat.Text = "Modifica dati";
+                list_execution.Visible = true;
+                pan_ex.Visible = true;
+                btn_espandi.Visible = true;
+                list_execution.Items.Clear();
+
+                /*dgv_main.ReadOnly = true;
+                dgv_main.ClearSelection();
+
+                pan_data.Enabled = false;*/
+
+                esecuzione = true;
+            }
+            else
+            {
+                this.ClientSize = new System.Drawing.Size(1400, 800);
+                this.CenterToScreen();
+
+                btn_esp_dat.Text = "Esecuzione";
+                list_execution.Visible = false;
+                btn_espandi.Visible = false;
+                pan_ex.Visible = false;
+
+                dgv_main.ReadOnly = false;
+                //dgv_main.ClearSelection();
+
+                pan_data.Enabled = true;
+
+                esecuzione = false;
+            }
+        }
+
+        private void btn_ex_Click(object sender, EventArgs e)
+        {
+            GenerateTable(5, 3);
+
+            dgv_main.Rows[0].Cells[0].Value = 10;
+            dgv_main.Rows[0].Cells[1].Value = 12;
+            dgv_main.Rows[0].Cells[2].Value = 80;
+            dgv_main.Rows[0].Cells[3].Value = 30;
+            dgv_main.Rows[0].Cells[4].Value = 50;
+            dgv_main.Rows[0].Cells[5].Value = 200;
+
+            dgv_main.Rows[1].Cells[0].Value = 15;
+            dgv_main.Rows[1].Cells[1].Value = 30;
+            dgv_main.Rows[1].Cells[2].Value = 40;
+            dgv_main.Rows[1].Cells[3].Value = 45;
+            dgv_main.Rows[1].Cells[4].Value = 60;
+            dgv_main.Rows[1].Cells[5].Value = 150;
+
+            dgv_main.Rows[2].Cells[0].Value = 20;
+            dgv_main.Rows[2].Cells[1].Value = 35;
+            dgv_main.Rows[2].Cells[2].Value = 30;
+            dgv_main.Rows[2].Cells[3].Value = 20;
+            dgv_main.Rows[2].Cells[4].Value = 50;
+            dgv_main.Rows[2].Cells[5].Value = 160;
+
+            dgv_main.Rows[3].Cells[0].Value = 100;
+            dgv_main.Rows[3].Cells[1].Value = 120;
+            dgv_main.Rows[3].Cells[2].Value = 90;
+            dgv_main.Rows[3].Cells[3].Value = 50;
+            dgv_main.Rows[3].Cells[4].Value = 150;
+            dgv_main.Rows[3].Cells[5].Value = 510;
+
+            btn_gen.Enabled = true;
+        }
         #endregion
 
         #region esecuzione
         private async void btn_execute_Click(object sender, EventArgs e)
         {
+
+
             if (dgv_main.Rows.Count <= 2 || dgv_main.Columns.Count <= 2)
             {
                 MessageBox.Show("Devi prima creare una tabella", "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -354,17 +435,12 @@ namespace Angioletti_Logistica
             #endregion
 
             #region interfaccia
-            this.ClientSize = new System.Drawing.Size(1750, 800);
-            this.CenterToScreen();
-            btn_espandi.Visible = true;
-            list_execution.Visible = true;
             list_execution.Items.Clear();
             dgv_main.DefaultCellStyle.SelectionForeColor = Color.Black;
             dgv_main.DefaultCellStyle.SelectionBackColor = dgv_main.DefaultCellStyle.BackColor;
             dgv_main.ClearSelection();
 
-            cmb_execute.Enabled = false;
-            btn_esp_dat.Enabled = false;
+            LockInterface(true);
             #endregion
 
             save_table_datas();
@@ -425,14 +501,21 @@ namespace Angioletti_Logistica
             }
             #endregion
 
-            /*this.ClientSize = new System.Drawing.Size(1400, 800);*/
-            cmb_execute.Enabled = true;
+            LockInterface(false);
 
-            btn_esp_dat.Enabled = true;
-            btn_esp_dat.Enabled = true;
             dgv_main.DefaultCellStyle.SelectionForeColor = Color.White;
             dgv_main.DefaultCellStyle.SelectionBackColor = color;
 
+        }
+
+        private void LockInterface(bool l)
+        {
+            dgv_main.ReadOnly = l;
+            btn_execute.Enabled = !l;
+            cmb_execute.Enabled = !l;
+            btn_ex.Enabled = !l;
+            btn_chnge_table.Enabled = !l;
+            btn_gen.Enabled = !l;
         }
 
         public void save_table_datas()
@@ -462,16 +545,16 @@ namespace Angioletti_Logistica
 
         public void ColorCells(int rowIndex, int columnIndex, bool active)
         {
-            Color color = active ? Color.Khaki : Color.White;
-            Color header_color = active ? Color.DarkKhaki : Color.White;
-            Color fore_color = active ? Color.Red : Color.Black;
+            Color color = active ? Color.LightBlue : Color.White;
+            Color header_color = active ? Color.SteelBlue : Color.White;
+            Color fore_color = active ? Color.Blue : Color.Black;
 
             dgv_main.Columns[columnIndex].HeaderCell.Style.BackColor = header_color;
             dgv_main.Rows[rowIndex].HeaderCell.Style.BackColor = header_color;
+            dgv_main.Columns[columnIndex].HeaderCell.Style.ForeColor = fore_color;
+            dgv_main.Rows[rowIndex].HeaderCell.Style.ForeColor = fore_color;
 
-            dgv_main.Columns[columnIndex].DefaultCellStyle.BackColor = color;
-            dgv_main.Rows[rowIndex].DefaultCellStyle.BackColor = color;
-
+            dgv_main.Rows[rowIndex].Cells[columnIndex].Style.BackColor = color;
             dgv_main.Rows[rowIndex].Cells[columnIndex].Style.ForeColor = fore_color;
 
             dgv_main.ClearSelection();
@@ -486,8 +569,10 @@ namespace Angioletti_Logistica
             {
                 list_execution.Items.Add($"Risoluzione tramite metodo del nord ovest");
                 list_execution.Items.Add("");
+                int visibleItems = list_execution.ClientSize.Height / list_execution.ItemHeight;
+                list_execution.TopIndex = Math.Max(list_execution.Items.Count - visibleItems + 1, 0);
             }));
-
+            if(Espandi != null)Espandi.Invoke(new Action(() => { Espandi.refresh_table(list_execution); }));
 
             int tot = (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value;
             int res = 0;
@@ -502,12 +587,10 @@ namespace Angioletti_Logistica
 
             do
             {
-                dgv_main.ClearSelection();
                 dgv_main.Invoke(new Action(() =>
                 {
                     ColorCells(0, 0, true);
                 }));
-
                 System.Threading.Thread.Sleep((int)nud_delay.Value / 2);
 
 
@@ -535,6 +618,8 @@ namespace Angioletti_Logistica
                     list_execution.Invoke(new Action(() =>
                     {
                         list_execution.Items.Add($"{val_c} prodotti da {produttore} a {cliente} a costo {prezzo} per un totale di {spesa}");
+                        int visibleItems = list_execution.ClientSize.Height / list_execution.ItemHeight;
+                        list_execution.TopIndex = Math.Max(list_execution.Items.Count - visibleItems + 1, 0);
                     }));
                 }
                 else if (val_p > val_c)
@@ -547,13 +632,14 @@ namespace Angioletti_Logistica
                         dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[0].Value = (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[0].Value - val_c;
 
                         dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = tot - val_c;
-                        dgv_main.ClearSelection();
                     }));
 
 
                     list_execution.Invoke(new Action(() =>
                     {
                         list_execution.Items.Add($"{val_c} prodotti da {produttore} a {cliente} a costo {prezzo} per un totale di {spesa}");
+                        int visibleItems = list_execution.ClientSize.Height / list_execution.ItemHeight;
+                        list_execution.TopIndex = Math.Max(list_execution.Items.Count - visibleItems + 1, 0);
                     }));
                 }
                 else if (val_c > val_p)
@@ -566,13 +652,14 @@ namespace Angioletti_Logistica
                         dgv_main.Rows[0].Cells[dgv_main.Columns.Count - 1].Value = (int)dgv_main.Rows[0].Cells[dgv_main.Columns.Count - 1].Value - val_p;
 
                         dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = tot - val_p;
-                        dgv_main.ClearSelection();
                     }));
 
 
                     list_execution.Invoke(new Action(() =>
                     {
                         list_execution.Items.Add($"{val_p} prodotti da {produttore} a {cliente} a costo {prezzo} per un totale di {spesa}");
+                        int visibleItems = list_execution.ClientSize.Height / list_execution.ItemHeight;
+                        list_execution.TopIndex = Math.Max(list_execution.Items.Count - visibleItems + 1, 0);
                     }));
                 }
 
@@ -585,9 +672,9 @@ namespace Angioletti_Logistica
                 {
                     ColorCells(0, 0, false);
                 }));
+                if (Espandi != null) Espandi.Invoke(new Action(() => { Espandi.refresh_table(list_execution); }));
+
                 System.Threading.Thread.Sleep((int)nud_delay.Value / 2);
-
-
             } while (tot != 0);
 
             list_execution.Invoke(new Action(() =>
@@ -597,8 +684,10 @@ namespace Angioletti_Logistica
                 list_execution.Items.Add("");
                 list_execution.Items.Add("_______________________________________________________________________________________________________");
                 list_execution.Items.Add("");
+                int visibleItems = list_execution.ClientSize.Height / list_execution.ItemHeight;
+                list_execution.TopIndex = Math.Max(list_execution.Items.Count - visibleItems + 1, 0);
             }));
-
+            if (Espandi != null) Espandi.Invoke(new Action(() => { Espandi.refresh_table(list_execution); }));
         }
 
         public void MinimiCosti()
@@ -607,7 +696,10 @@ namespace Angioletti_Logistica
             {
                 list_execution.Items.Add($"Risoluzione tramite metodo dei minimi costi");
                 list_execution.Items.Add("");
+                int visibleItems = list_execution.ClientSize.Height / list_execution.ItemHeight;
+                list_execution.TopIndex = Math.Max(list_execution.Items.Count - visibleItems + 1, 0);
             }));
+            if (Espandi != null) Espandi.Invoke(new Action(() => { Espandi.refresh_table(list_execution); }));
 
 
             int tot = (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value;
@@ -623,7 +715,7 @@ namespace Angioletti_Logistica
 
             do
             {
-                dgv_main.ClearSelection();
+                //dgv_main.ClearSelection();
 
                 int X = 0;
                 int Y = 0;
@@ -681,13 +773,14 @@ namespace Angioletti_Logistica
                         dgv_main.Columns.RemoveAt(Y);
 
                         dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = tot - val_c;
-                        dgv_main.ClearSelection();
                     }));
 
 
                     list_execution.Invoke(new Action(() =>
                     {
                         list_execution.Items.Add($"{val_c} prodotti da {produttore} a {cliente} a costo {prezzo} per un totale di {spesa}");
+                        int visibleItems = list_execution.ClientSize.Height / list_execution.ItemHeight;
+                        list_execution.TopIndex = Math.Max(list_execution.Items.Count - visibleItems + 1, 0);
                     }));
                 }
                 else if (val_p > val_c)
@@ -700,13 +793,15 @@ namespace Angioletti_Logistica
                         dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[Y].Value = (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[Y].Value - val_c;
 
                         dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = tot - val_c;
-                        dgv_main.ClearSelection();
+                        //dgv_main.ClearSelection();
                     }));
 
 
                     list_execution.Invoke(new Action(() =>
                     {
                         list_execution.Items.Add($"{val_c} prodotti da {produttore} a {cliente} a costo {prezzo} per un totale di {spesa}");
+                        int visibleItems = list_execution.ClientSize.Height / list_execution.ItemHeight;
+                        list_execution.TopIndex = Math.Max(list_execution.Items.Count - visibleItems + 1, 0);
                     }));
                 }
                 else if (val_c > val_p)
@@ -719,13 +814,15 @@ namespace Angioletti_Logistica
                         dgv_main.Rows[X].Cells[dgv_main.Columns.Count - 1].Value = (int)dgv_main.Rows[X].Cells[dgv_main.Columns.Count - 1].Value - val_p;
 
                         dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = tot - val_p;
-                        dgv_main.ClearSelection();
+                        //dgv_main.ClearSelection();
                     }));
 
 
                     list_execution.Invoke(new Action(() =>
                     {
                         list_execution.Items.Add($"{val_p} prodotti da {produttore} a {cliente} a costo {prezzo} per un totale di {spesa}");
+                        int visibleItems = list_execution.ClientSize.Height / list_execution.ItemHeight;
+                        list_execution.TopIndex = Math.Max(list_execution.Items.Count - visibleItems + 1, 0);
                     }));
                 }
 
@@ -738,9 +835,9 @@ namespace Angioletti_Logistica
                 {
                     ColorCells(X, Y, false);
                 }));
+                if (Espandi != null) Espandi.Invoke(new Action(() => { Espandi.refresh_table(list_execution); }));
+
                 System.Threading.Thread.Sleep((int)nud_delay.Value / 2);
-
-
             } while (tot != 0);
 
             list_execution.Invoke(new Action(() =>
@@ -750,7 +847,10 @@ namespace Angioletti_Logistica
                 list_execution.Items.Add("");
                 list_execution.Items.Add("_______________________________________________________________________________________________________");
                 list_execution.Items.Add("");
+                int visibleItems = list_execution.ClientSize.Height / list_execution.ItemHeight;
+                list_execution.TopIndex = Math.Max(list_execution.Items.Count - visibleItems + 1, 0);
             }));
+            if (Espandi != null) Espandi.Invoke(new Action(() => { Espandi.refresh_table(list_execution); }));
 
         }
 
@@ -761,7 +861,10 @@ namespace Angioletti_Logistica
             {
                 list_execution.Items.Add($"Risoluzione tramite metodo di Vogel");
                 list_execution.Items.Add("");
+                int visibleItems = list_execution.ClientSize.Height / list_execution.ItemHeight;
+                list_execution.TopIndex = Math.Max(list_execution.Items.Count - visibleItems + 1, 0);
             }));
+            if (Espandi != null) Espandi.Invoke(new Action(() => { Espandi.refresh_table(list_execution); }));
 
 
             int tot = (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value;
@@ -778,7 +881,7 @@ namespace Angioletti_Logistica
 
             do
             {
-                dgv_main.ClearSelection();
+                //dgv_main.ClearSelection();
 
                 dgv_main.Invoke(new Action(() =>
                 {
@@ -824,7 +927,7 @@ namespace Angioletti_Logistica
                 {
                     int min = -1;
 
-                    for (int x = 0; x < dgv_main.Columns.Count - 2; x++)
+                    for (int x = 0; x < dgv_main.Rows.Count - 2; x++)
                     {
                         if ((int)dgv_main.Rows[x].Cells[Y].Value < min || min == -1)
                         {
@@ -872,12 +975,14 @@ namespace Angioletti_Logistica
                         dgv_main.Columns.RemoveAt(Y);
 
                         dgv_main.Rows[dgv_main.Rows.Count - 2].Cells[dgv_main.Columns.Count - 2].Value = tot - val_c;
-                        dgv_main.ClearSelection();
+                        //dgv_main.ClearSelection();
                     }));
 
                     list_execution.Invoke(new Action(() =>
                     {
                         list_execution.Items.Add($"{val_c} prodotti da {produttore} a {cliente} a costo {prezzo} per un totale di {spesa}");
+                        int visibleItems = list_execution.ClientSize.Height / list_execution.ItemHeight;
+                        list_execution.TopIndex = Math.Max(list_execution.Items.Count - visibleItems + 1, 0);
                     }));
                 }
                 else if (val_p > val_c)
@@ -890,12 +995,13 @@ namespace Angioletti_Logistica
                         dgv_main.Rows[dgv_main.Rows.Count - 2].Cells[Y].Value = (int)dgv_main.Rows[dgv_main.Rows.Count - 2].Cells[Y].Value - val_c;
 
                         dgv_main.Rows[dgv_main.Rows.Count - 2].Cells[dgv_main.Columns.Count - 2].Value = tot - val_c;
-                        dgv_main.ClearSelection();
                     }));
 
                     list_execution.Invoke(new Action(() =>
                     {
                         list_execution.Items.Add($"{val_c} prodotti da {produttore} a {cliente} a costo {prezzo} per un totale di {spesa}");
+                        int visibleItems = list_execution.ClientSize.Height / list_execution.ItemHeight;
+                        list_execution.TopIndex = Math.Max(list_execution.Items.Count - visibleItems + 1, 0);
                     }));
                 }
                 else if (val_c > val_p)
@@ -908,12 +1014,13 @@ namespace Angioletti_Logistica
                         dgv_main.Rows[X].Cells[dgv_main.Columns.Count - 2].Value = (int)dgv_main.Rows[X].Cells[dgv_main.Columns.Count - 2].Value - val_p;
 
                         dgv_main.Rows[dgv_main.Rows.Count - 2].Cells[dgv_main.Columns.Count - 2].Value = tot - val_p;
-                        dgv_main.ClearSelection();
                     }));
 
                     list_execution.Invoke(new Action(() =>
                     {
                         list_execution.Items.Add($"{val_p} prodotti da {produttore} a {cliente} a costo {prezzo} per un totale di {spesa}");
+                        int visibleItems = list_execution.ClientSize.Height / list_execution.ItemHeight;
+                        list_execution.TopIndex = Math.Max(list_execution.Items.Count - visibleItems + 1, 0);
                     }));
                 }
 
@@ -927,8 +1034,7 @@ namespace Angioletti_Logistica
                 {
                     ColorCells(X, Y, false);
                 }));
-
-
+                if (Espandi != null) Espandi.Invoke(new Action(() => { Espandi.refresh_table(list_execution); }));
 
             } while (tot != 0);
 
@@ -939,8 +1045,10 @@ namespace Angioletti_Logistica
                 list_execution.Items.Add("");
                 list_execution.Items.Add("_______________________________________________________________________________________________________");
                 list_execution.Items.Add("");
+                int visibleItems = list_execution.ClientSize.Height / list_execution.ItemHeight;
+                list_execution.TopIndex = Math.Max(list_execution.Items.Count - visibleItems + 1, 0);
             }));
-
+            if (Espandi != null) Espandi.Invoke(new Action(() => { Espandi.refresh_table(list_execution); }));
         }
 
         public void CalcolaScarti(bool add = false)
@@ -1053,8 +1161,10 @@ namespace Angioletti_Logistica
             {
                 list_execution.Items.Add($"Risoluzione tramite metodo di Russell");
                 list_execution.Items.Add("");
+                int visibleItems = list_execution.ClientSize.Height / list_execution.ItemHeight;
+                list_execution.TopIndex = Math.Max(list_execution.Items.Count - visibleItems + 1, 0);
             }));
-
+            if (Espandi != null) Espandi.Invoke(new Action(() => { Espandi.refresh_table(list_execution); }));
 
             int tot = (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value;
             int res = 0;
@@ -1070,9 +1180,6 @@ namespace Angioletti_Logistica
 
             do
             {
-               
-                dgv_main.ClearSelection();
-
                 #region Calcolo scarti
                 List<CellData> Massimi = new List<CellData>();
                 for (int x = 0; x < dgv_main.Rows.Count - 1; x++)
@@ -1103,7 +1210,7 @@ namespace Angioletti_Logistica
                 }
 
                 foreach (var c in Massimi)
-                    list_execution.Invoke(new Action(() =>
+                    dgv_main.Invoke(new Action(() =>
                     {
                         dgv_main.Rows[c.x].Cells[c.y].Style.ForeColor = Color.Red;
                     }));
@@ -1125,13 +1232,13 @@ namespace Angioletti_Logistica
                         value -= Massimi.Where(c => c.y == y).Max(c => c.Value);
                         value -= Massimi.Where(c => c.x == x).Max(c => c.Value);
 
-                        list_execution.Invoke(new Action(() =>
+                        cmb_execute.Invoke(new Action(() =>
                             {
                                 dgv_main.Rows[x].Cells[y].Value = value;
                             }));
 
 
-                        list_execution.Invoke(new Action(() =>
+                        cmb_execute.Invoke(new Action(() =>
                         {
                             dgv_main.Rows[x].Cells[y].Style.ForeColor = Color.Black;
                         }));
@@ -1178,7 +1285,6 @@ namespace Angioletti_Logistica
                         dgv_main.Columns.RemoveAt(Y);
 
                         dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = tot - val_c;
-                        dgv_main.ClearSelection();
                     }));
 
                     foreach (var column in tab_vecchia)
@@ -1189,6 +1295,8 @@ namespace Angioletti_Logistica
                     list_execution.Invoke(new Action(() =>
                     {
                         list_execution.Items.Add($"{val_c} prodotti da {produttore} a {cliente} a costo {prezzo} per un totale di {spesa}");
+                        int visibleItems = list_execution.ClientSize.Height / list_execution.ItemHeight;
+                        list_execution.TopIndex = Math.Max(list_execution.Items.Count - visibleItems + 1, 0);
                     }));
                 }
                 else if (val_p > val_c)
@@ -1201,7 +1309,6 @@ namespace Angioletti_Logistica
                         dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[Y].Value = (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[Y].Value - val_c;
 
                         dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = tot - val_c;
-                        dgv_main.ClearSelection();
                     }));
 
                     foreach (var column in tab_vecchia)
@@ -1211,6 +1318,8 @@ namespace Angioletti_Logistica
                     list_execution.Invoke(new Action(() =>
                     {
                         list_execution.Items.Add($"{val_c} prodotti da {produttore} a {cliente} a costo {prezzo} per un totale di {spesa}");
+                        int visibleItems = list_execution.ClientSize.Height / list_execution.ItemHeight;
+                        list_execution.TopIndex = Math.Max(list_execution.Items.Count - visibleItems + 1, 0);
                     }));
                 }
                 else if (val_c > val_p)
@@ -1223,7 +1332,6 @@ namespace Angioletti_Logistica
                         dgv_main.Rows[X].Cells[dgv_main.Columns.Count - 1].Value = (int)dgv_main.Rows[X].Cells[dgv_main.Columns.Count - 1].Value - val_p;
 
                         dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value = tot - val_p;
-                        dgv_main.ClearSelection();
                     }));
 
                     tab_vecchia.RemoveAt(Y);
@@ -1231,10 +1339,10 @@ namespace Angioletti_Logistica
                     list_execution.Invoke(new Action(() =>
                     {
                         list_execution.Items.Add($"{val_p} prodotti da {produttore} a {cliente} a costo {prezzo} per un totale di {spesa}");
+                        int visibleItems = list_execution.ClientSize.Height / list_execution.ItemHeight;
+                        list_execution.TopIndex = Math.Max(list_execution.Items.Count - visibleItems + 1, 0);
                     }));
-                }
-
-                
+                }              
                 
 
                 tot = (int)dgv_main.Rows[dgv_main.Rows.Count - 1].Cells[dgv_main.Columns.Count - 1].Value;
@@ -1247,18 +1355,13 @@ namespace Angioletti_Logistica
                 }));
 
 
-
                 for (int x = 0; x < dgv_main.Rows.Count - 1; x++)
                     for (int y = 0; y < dgv_main.Columns.Count - 1; y++)
                         dgv_main.Invoke(new Action(() =>
                         {
                             dgv_main.Rows[x].Cells[y].Value = tab_vecchia[y][x];
                         }));
-
-
-                var breakpoint = 0;
-
-
+                if (Espandi != null) Espandi.Invoke(new Action(() => { Espandi.refresh_table(list_execution); }));
             } while (tot != 0);
 
 
@@ -1270,8 +1373,10 @@ namespace Angioletti_Logistica
                 list_execution.Items.Add("");
                 list_execution.Items.Add("_______________________________________________________________________________________________________");
                 list_execution.Items.Add("");
+                int visibleItems = list_execution.ClientSize.Height / list_execution.ItemHeight;
+                list_execution.TopIndex = Math.Max(list_execution.Items.Count - visibleItems + 1, 0);
             }));
-
+            if (Espandi != null) Espandi.Invoke(new Action(() => { Espandi.refresh_table(list_execution); }));
         }
         #endregion
         #endregion
@@ -1300,69 +1405,10 @@ namespace Angioletti_Logistica
                 dgv_main.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = (new Random()).Next((int)nud_min.Value, (int)nud_max.Value);
                 return;
             }
-
-
-
-            if (e.RowIndex != dgv_main.Rows.Count - 1 && e.ColumnIndex != dgv_main.Columns.Count - 1)
-            {
-                if (n > (int)nud_max.Value)
-                    dgv_main.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = (int)nud_max.Value;
-
-                if (n < (int)nud_min.Value)
-                    dgv_main.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = (int)nud_min.Value;
-
-                return;
-            }
-
         }
         #endregion
 
-        private void btn_espandi_Click(object sender, EventArgs e)
-        {
-            (new frm_vis(list_execution)).ShowDialog();
-        }
 
-        private void btn_esp_Click(object sender, EventArgs e)
-        {
-            if (!esecuzione)
-            {
-                
-
-
-                this.ClientSize = new System.Drawing.Size(1750, 800);
-                this.CenterToScreen();
-
-                btn_esp_dat.Text = "Modifica dati";
-                list_execution.Visible = true;
-                pan_ex.Visible = true;
-                btn_espandi.Visible = true;
-                list_execution.Items.Clear();
-
-                /*dgv_main.ReadOnly = true;
-                dgv_main.ClearSelection();
-
-                pan_data.Enabled = false;*/
-
-                esecuzione = true;
-            }
-            else
-            {
-                this.ClientSize = new System.Drawing.Size(1450, 800);
-                this.CenterToScreen();
-
-                btn_esp_dat.Text = "Esecuzione";
-                list_execution.Visible = false;
-                btn_espandi.Visible = false;
-                pan_ex.Visible = false;
-
-                dgv_main.ReadOnly = false;
-                dgv_main.ClearSelection();
-
-                pan_data.Enabled = true;
-
-                esecuzione = false;
-            }
-        }
     }
 
     public class CellData : IComparable<CellData>

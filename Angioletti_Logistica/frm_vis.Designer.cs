@@ -39,18 +39,18 @@
             this.list_main.ItemHeight = 25;
             this.list_main.Location = new System.Drawing.Point(0, 0);
             this.list_main.Name = "list_main";
-            this.list_main.Size = new System.Drawing.Size(600, 800);
+            this.list_main.Size = new System.Drawing.Size(653, 800);
             this.list_main.TabIndex = 0;
             // 
             // frm_vis
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(600, 800);
+            this.ClientSize = new System.Drawing.Size(653, 800);
             this.Controls.Add(this.list_main);
             this.Name = "frm_vis";
-            this.Text = "Form1";
-            this.Load += new System.EventHandler(this.frm_vis_Load);
+            this.Text = "Logs";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.frm_vis_FormClosed);
             this.ResumeLayout(false);
 
         }

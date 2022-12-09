@@ -12,7 +12,6 @@ namespace Angioletti_Logistica
 {
     public partial class frm_vis : Form
     {
-        private ListBox _dati { get; }
 
         public frm_vis()
         {
@@ -21,13 +20,16 @@ namespace Angioletti_Logistica
 
         public frm_vis(ListBox list)
         {
-            _dati = list;
             InitializeComponent();
+
+            refresh_table(list);
         }
 
-        private void frm_vis_Load(object sender, EventArgs e)
+        public void refresh_table(ListBox list)
         {
-            foreach (var item in _dati.Items)
+            list_main.Items.Clear();
+
+            foreach (var item in list.Items)
             {
                 if (item.ToString().Length > 0 && int.TryParse(item.ToString().Substring(0, 1), out _))
                     list_main.Items.Add("Trasportati " + item.ToString());
@@ -35,6 +37,13 @@ namespace Angioletti_Logistica
                     list_main.Items.Add(item);
             }
 
+            int visibleItems = list_main.ClientSize.Height / list_main.ItemHeight;
+            list_main.TopIndex = Math.Max(list_main.Items.Count - visibleItems + 1, 0);
+        }
+
+        private void frm_vis_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Program.Form.Espandi = null;
         }
     }
 }
